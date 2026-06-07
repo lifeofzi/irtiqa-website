@@ -93,6 +93,26 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .viz-label{position:absolute;bottom:10px;right:16px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(192,0,0,.3)}
 footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;color:rgba(255,255,255,.12);text-transform:uppercase}
 
+/* ABOUT */
+.about-section{background:#000;min-height:100vh;padding-top:60px}
+.about-photo-wrap{position:relative;width:100%;max-height:70vh;overflow:hidden;line-height:0}
+.about-photo{width:100%;max-height:70vh;object-fit:cover;object-position:center top;filter:grayscale(20%) contrast(1.1);display:block}
+.about-photo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,#000 100%)}
+.about-body{max-width:720px;margin:0 auto;padding:48px 40px 80px}
+.about-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px}
+.about-name{font-size:clamp(36px,7vw,72px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);margin-bottom:0;line-height:1}
+.about-hairline{width:60px;height:1px;background:var(--red);margin:24px 0 32px}
+.about-para{font-family:'Space Mono',monospace;font-size:13px;line-height:1.9;color:rgba(255,255,255,.65);margin-bottom:22px;letter-spacing:.02em}
+.about-para em{color:var(--white);font-style:normal}
+.about-contact-block{display:flex;flex-direction:column;gap:8px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(192,0,0,.2)}
+.about-contact-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--red);opacity:.6}
+.about-contact-email{font-family:'Space Mono',monospace;font-size:14px;letter-spacing:.06em;color:var(--white);text-decoration:none;transition:color .2s}
+.about-contact-email:hover{color:var(--red)}
+@media(max-width:760px){
+  .about-body{padding:32px 20px 60px}
+  .about-para{font-size:12px}
+}
+
 /* TOP NAV */
 .top-nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;justify-content:center;background:rgba(5,5,5,.88);backdrop-filter:blur(10px);border-bottom:1px solid rgba(192,0,0,.22)}
 .top-tab{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.45em;text-transform:uppercase;padding:16px 28px;cursor:pointer;color:rgba(255,255,255,.32);border:none;border-bottom:2px solid transparent;background:none;transition:color .2s,border-color .2s;flex-shrink:0}

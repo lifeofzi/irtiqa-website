@@ -24,12 +24,13 @@ const WOLIVO_TRACKS = [
   { vid: 'G2AyGm053V8', num: '10', title: 'Walo Ha' },
 ];
 
-type Section = 'irtiqa' | 'wolivo' | 'videos';
+type Section = 'irtiqa' | 'wolivo' | 'videos' | 'about';
 
 const SECTION_META: Record<Section, { label: string; titleEn: string; titleAr: string; cover: string; tag: string; epLabel: string }> = {
-  irtiqa: { label: 'IRTIQA EP', titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg', tag: 'Full Album', epLabel: 'EP · 2026 · 4 Tracks' },
-  wolivo: { label: 'WOLIVO',    titleEn: 'WOLIVO',  titleAr: '',       cover: '/wolivo.webp', tag: 'Album', epLabel: '2022 · 10 Tracks' },
-  videos: { label: 'ALL VIDEOS', titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg', tag: '', epLabel: '' },
+  irtiqa: { label: 'IRTIQA EP',   titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: 'Full Album', epLabel: 'EP · 2026 · 4 Tracks' },
+  wolivo: { label: 'WOLIVO',      titleEn: 'WOLIVO',  titleAr: '',       cover: '/wolivo.webp', tag: 'Album',      epLabel: '2022 · 10 Tracks' },
+  videos: { label: 'ALL VIDEOS',  titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
+  about:  { label: 'ABOUT',       titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
 };
 
 const ALL_VIDEOS = [
@@ -787,7 +788,7 @@ export default function HomeClient() {
       <div className="vignette" />
 
       <nav className="top-nav" aria-label="Content sections">
-        {(['irtiqa', 'wolivo', 'videos'] as Section[]).map((s) => (
+        {(['irtiqa', 'wolivo', 'videos', 'about'] as Section[]).map((s) => (
           <button
             key={s}
             className={`top-tab${activeSection === s ? ' active' : ''}`}
@@ -798,7 +799,7 @@ export default function HomeClient() {
         ))}
       </nav>
 
-      {activeSection !== 'videos' && <section className="hero">
+      {activeSection !== 'videos' && activeSection !== 'about' && <section className="hero">
         <div
           className="hero-bg"
           style={{ backgroundImage: activeSection === 'wolivo' ? 'none' : `url('${meta.cover}')`, opacity: activeSection === 'wolivo' ? 0 : 1 }}
@@ -829,7 +830,7 @@ export default function HomeClient() {
         </div>
       </section>}
 
-      {activeSection !== 'videos' && (
+      {activeSection !== 'videos' && activeSection !== 'about' && (
         <>
           <div className="ticker-wrap" aria-hidden="true">
             <div className="ticker" ref={tickerRef} />
@@ -922,6 +923,45 @@ export default function HomeClient() {
           <div className="viz-wrap">
             <canvas id="viz" ref={vizRef} />
             <div className="viz-label">Audio Spectrum</div>
+          </div>
+        </section>
+      ) : activeSection === 'about' ? (
+        <section className="about-section">
+          <div className="about-photo-wrap">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/ali.jpg" alt="Ali Saffudin" className="about-photo" />
+            <div className="about-photo-overlay" />
+          </div>
+          <div className="about-body">
+            <div className="about-tag">Singer · Songwriter · Kashmir</div>
+            <h2 className="about-name">Ali Saffudin</h2>
+            <div className="about-hairline" />
+            <p className="about-para">
+              Ali Saffudin is a singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir.
+              Raised in a Shia neighbourhood where elegies on the martyrdom of Imam Hussain
+              were a way of life, music entered him early — not as performance, but as testimony.
+            </p>
+            <p className="about-para">
+              He studied fine arts at Delhi University before returning to Kashmir in 2014,
+              completing a Masters in Mass Communication at Kashmir University. He has spent
+              the years since making music that refuses to separate beauty from resistance.
+            </p>
+            <p className="about-para">
+              His early work drew from the classical Kashmiri folk tradition — reworking ballads
+              by 16th-century poetess Habba Khatoon into pop without losing their original soul.
+              But his range runs wider: punk, grunge, heavy metal, folk, and rock all surface in
+              his writing, which moves fluidly between Kashmiri and Urdu, between grief and defiance.
+            </p>
+            <p className="about-para">
+              In 2022, he released <em>Wolivo</em> on Azadi Records — a 10-track debut album
+              that tells the story of a boy whose heartland is torn apart by conflict. It is an
+              act of catharsis, condemnation, and reformation. In 2026, he returns with <em>IRTIQA</em> —
+              four tracks, one question: how high can you rise?
+            </p>
+            <div className="about-contact-block">
+              <span className="about-contact-label">Contact</span>
+              <a className="about-contact-email" href="mailto:alisaffudin@gmail.com">alisaffudin@gmail.com</a>
+            </div>
           </div>
         </section>
       ) : (
