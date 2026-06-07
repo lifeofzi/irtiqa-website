@@ -1071,7 +1071,7 @@ export default function HomeClient() {
       )}
 
       <div className="wire-wrap"><canvas ref={wireBotRef} /></div>
-      <footer>IRTIQA &nbsp;·&nbsp; Ali Saffudin &nbsp;·&nbsp; ارتقا &nbsp;·&nbsp; EP 2026</footer>
+      <footer>Ali Saffudin &nbsp;·&nbsp; alisaffudin@gmail.com &nbsp;·&nbsp; 2026</footer>
     </>
   );
 }
