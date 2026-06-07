@@ -116,6 +116,8 @@ export default function HomeClient() {
     router.replace(`?s=${s}`, { scroll: false });
   }
   const [activeTrack, setActiveTrack] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPausedByUser, setIsPausedByUser] = useState(false);
   const [ytSrc, setYtSrc] = useState(
     `https://www.youtube.com/embed/${TRACKS[0].vid}?list=${PL}&rel=0&modestbranding=1&color=red`
   );
@@ -127,6 +129,9 @@ export default function HomeClient() {
 
   const meta = SECTION_META[activeSection];
 
+  const pausedCassetteRef = useRef<HTMLCanvasElement>(null);
+  const cassetteVideoRef = useRef<HTMLVideoElement>(null);
+  const ytIframeRef = useRef<HTMLIFrameElement>(null);
   const eqRef = useRef<HTMLDivElement>(null);
   const wolivoBgRef = useRef<HTMLCanvasElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -134,6 +139,19 @@ export default function HomeClient() {
   const wireBotRef = useRef<HTMLCanvasElement>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const vizRef = useRef<HTMLCanvasElement>(null);
+
+  /* ── Freeze GIF first frame onto canvas for paused state ── */
+  useEffect(() => {
+    const cv = pausedCassetteRef.current;
+    if (!cv) return;
+    const img = new Image();
+    img.src = '/cassette.gif';
+    img.onload = () => {
+      cv.width = img.naturalWidth;
+      cv.height = img.naturalHeight;
+      cv.getContext('2d')?.drawImage(img, 0, 0);
+    };
+  }, []);
 
   /* ── Wolivo floral background ── */
   useEffect(() => {
@@ -301,9 +319,27 @@ export default function HomeClient() {
   /* ── Track switching ── */
   function selectTrack(idx: number) {
     setActiveTrack(idx);
+    setIsPlaying(true);
+    setIsPausedByUser(false);
+    cassetteVideoRef.current?.play();
     setYtSrc(
-      `https://www.youtube.com/embed/${TRACKS[idx].vid}?list=${PL}&autoplay=1&rel=0&modestbranding=1&color=red`
+      `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
     );
+  }
+
+  function togglePlayPause() {
+    const vid = cassetteVideoRef.current;
+    const iframe = ytIframeRef.current;
+    if (!vid) return;
+    if (isPausedByUser) {
+      vid.play();
+      iframe?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      setIsPausedByUser(false);
+    } else {
+      vid.pause();
+      iframe?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      setIsPausedByUser(true);
+    }
   }
 
   function selectWolivoTrack(idx: number) {
@@ -904,18 +940,39 @@ export default function HomeClient() {
           </div>
           <div className="player-grid">
             <div className="yt-col">
-              <iframe
-                src={ytSrc}
-                className="yt-frame"
-                title="IRTIQA — Ali Saffudin"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-              />
-              <div className="now-playing-bar">
-                <div className="mini-spool" />
-                <span className="np-label">Now Playing</span>
-                <span className="np-track">{TRACKS[activeTrack].title}</span>
-                <div className="mini-spool" />
+              <div className="cassette-player">
+                <video
+                  ref={cassetteVideoRef}
+                  src="/cassette-loop.webm"
+                  className="cassette-player-gif"
+                  loop
+                  muted
+                  playsInline
+                />
+                <iframe
+                    ref={ytIframeRef}
+                    src={isPlaying ? ytSrc : ''}
+                    className="cassette-player-iframe"
+                    title="audio"
+                    allow="autoplay; encrypted-media"
+                  />
+                <div className={`cassette-player-overlay${!isPlaying ? ' cassette-player-overlay--idle' : ''}`}>
+                  <div className="cassette-player-track">
+                    {isPlaying ? TRACKS[activeTrack].title : 'Select a track'}
+                  </div>
+                  {isPlaying && (
+                    <div className="cassette-controls">
+                      <button onClick={togglePlayPause} className="cassette-ctrl-btn" aria-label={isPausedByUser ? 'Play' : 'Pause'}>
+                        <span className="cassette-btn-body">
+                          <span className="cassette-btn-label">
+                            {isPausedByUser ? '▶' : '⏸'}
+                          </span>
+                        </span>
+                        <span className="cassette-btn-shadow" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="tracklist-col">
@@ -936,8 +993,7 @@ export default function HomeClient() {
             </div>
           </div>
           <div className="viz-wrap">
-            <canvas id="viz" ref={vizRef} />
-            <div className="viz-label">Audio Spectrum</div>
+            <div className="viz-gradient" />
           </div>
         </section>
       ) : activeSection === 'wolivo' ? (
@@ -979,8 +1035,7 @@ export default function HomeClient() {
             </div>
           </div>
           <div className="viz-wrap">
-            <canvas id="viz" ref={vizRef} />
-            <div className="viz-label">Audio Spectrum</div>
+            <div className="viz-gradient" />
           </div>
         </section>
       ) : activeSection === 'about' ? (

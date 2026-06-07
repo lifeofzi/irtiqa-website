@@ -71,6 +71,27 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .yt-col{display:flex;flex-direction:column;border-right:1px solid rgba(192,0,0,.18)}
 .yt-frame{width:100%;aspect-ratio:16/9;border:none;display:block;background:#000}
 .now-playing-bar{display:flex;align-items:center;gap:14px;padding:14px 20px;background:#080000;border-top:1px solid rgba(192,0,0,.15)}
+.cassette-gif{height:52px;width:auto;flex-shrink:0}
+.cassette-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cassette-player-gif{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.cassette-player-iframe{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0}
+.cassette-player-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,.15) 45%,transparent 100%);transition:background .4s ease}
+.cassette-player-track{position:absolute;top:50px;left:50%;transform:translateX(-50%);width:90%;text-align:center}
+.cassette-controls{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.cassette-player-overlay--idle{background:rgba(0,0,0,.25)}
+.cassette-player-overlay--idle .cassette-player-track{font-size:clamp(12px,1.5vw,15px);color:rgba(255,255,255,.4);letter-spacing:.28em;top:50%;transform:translate(-50%,-50%)}
+.cassette-controls{display:flex;align-items:center;gap:14px}
+.cassette-ctrl-btn{position:relative;background:none;border:none;padding:0;cursor:pointer;width:52px;height:56px;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.cassette-btn-body{position:absolute;inset:0 0 6px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#2a2a2a 0%,#111 100%);border:1px solid #444;border-bottom:1px solid #222;border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:transform .08s,box-shadow .08s}
+.cassette-btn-shadow{position:absolute;bottom:0;left:2px;right:2px;height:6px;background:#000;border-radius:0 0 4px 4px;border:1px solid #111;border-top:none}
+.cassette-btn-label{font-size:18px;color:rgba(255,255,255,.9);line-height:1;text-shadow:0 0 8px rgba(255,255,255,.3)}
+.cassette-ctrl-btn:hover .cassette-btn-body{background:linear-gradient(180deg,#333 0%,#1a1a1a 100%)}
+.cassette-ctrl-btn:active .cassette-btn-body{transform:translateY(4px);box-shadow:inset 0 1px 0 rgba(0,0,0,.3)}
+.cassette-ctrl-btn:active .cassette-btn-shadow{display:none}
+.cassette-player-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:linear-gradient(to bottom,rgba(0,0,0,.3),rgba(0,0,0,.5))}
+.cassette-player-track{font-family:'Oswald',Impact,sans-serif;font-size:clamp(18px,3vw,32px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);text-align:center;padding:0 24px;text-shadow:0 2px 20px rgba(0,0,0,.8)}
+.cassette-player-ytlink{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.6);text-decoration:none;padding:10px 20px;border:1px solid rgba(192,0,0,.5);background:rgba(0,0,0,.5);transition:color .2s,border-color .2s,background .2s}
+.cassette-player-ytlink:hover{color:var(--white);border-color:var(--red);background:rgba(192,0,0,.15)}
 .mini-spool{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--red);position:relative;flex-shrink:0;animation:spin 2s linear infinite;box-shadow:0 0 6px rgba(192,0,0,.3)}
 .mini-spool::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(200,0,0,.4)}
 .mini-spool::after{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--red);opacity:.75}
@@ -78,7 +99,7 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .np-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);flex-shrink:0}
 .np-track{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--white);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tracklist-col{display:flex;flex-direction:column;position:relative;overflow:hidden}
-.cassette-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.09;filter:grayscale(40%) contrast(1.1);pointer-events:none;z-index:0;mix-blend-mode:screen}
+.cassette-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.22;filter:grayscale(40%) contrast(1.1);pointer-events:none;z-index:0;mix-blend-mode:screen}
 .tracklist-col .tracklist-head,.tracklist-col .track-item{position:relative;z-index:1}
 .tracklist-head{padding:14px 24px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--red);opacity:.45;border-bottom:1px solid rgba(192,0,0,.12)}
 .track-item{display:flex;align-items:center;gap:16px;padding:20px 24px;cursor:pointer;border-bottom:1px solid rgba(192,0,0,.1);position:relative;overflow:hidden;transition:background .2s}
@@ -90,9 +111,8 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .track-title{font-family:'Space Mono',monospace;font-size:clamp(11px,1.4vw,14px);letter-spacing:.04em;text-transform:uppercase;color:var(--white);flex:1}
 .track-play{font-size:14px;color:rgba(192,0,0,.5);opacity:0;transition:opacity .2s;flex-shrink:0}
 .track-item:hover .track-play,.track-item.active .track-play{opacity:1}
-.viz-wrap{width:100%;height:130px;background:#000;position:relative;overflow:hidden;border-bottom:1px solid rgba(192,0,0,.15)}
-#viz{width:100%;height:100%;display:block}
-.viz-label{position:absolute;bottom:10px;right:16px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(192,0,0,.3)}
+.viz-wrap{width:100%;height:60px;background:#000;position:relative;overflow:hidden;border-bottom:1px solid rgba(192,0,0,.15)}
+.viz-gradient{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(192,0,0,.08),transparent)}
 footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;color:rgba(255,255,255,.12);text-transform:uppercase}
 
 /* ABOUT */
