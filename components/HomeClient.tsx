@@ -139,6 +139,7 @@ export default function HomeClient() {
   const wireBotRef = useRef<HTMLCanvasElement>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const vizRef = useRef<HTMLCanvasElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
 
   /* ── Freeze GIF first frame onto canvas for paused state ── */
   useEffect(() => {
@@ -350,29 +351,6 @@ export default function HomeClient() {
   }
 
   useEffect(() => {
-    /* ── GRAIN overlay ── */
-    const S = 256;
-    const grainCv = document.createElement('canvas');
-    grainCv.width = grainCv.height = S;
-    const gc = grainCv.getContext('2d')!;
-    const grainLayer = document.createElement('div');
-    grainLayer.style.cssText =
-      'position:fixed;inset:0;opacity:.045;pointer-events:none;z-index:9997;background-repeat:repeat';
-    document.body.appendChild(grainLayer);
-    let grainTimer: ReturnType<typeof setTimeout>;
-    function tickGrain() {
-      const d = gc.createImageData(S, S);
-      const p = d.data;
-      for (let i = 0; i < p.length; i += 4) {
-        const v = (Math.random() * 255) | 0;
-        p[i] = p[i + 1] = p[i + 2] = v;
-        p[i + 3] = 255;
-      }
-      gc.putImageData(d, 0, 0);
-      grainLayer.style.backgroundImage = `url(${grainCv.toDataURL()})`;
-      grainTimer = setTimeout(tickGrain, 80);
-    }
-    tickGrain();
 
     /* ── EQ bars ── */
     const eq = eqRef.current;
@@ -400,10 +378,12 @@ export default function HomeClient() {
     /* ── VHS Flicker ── */
     let flickerTimer: ReturnType<typeof setTimeout>;
     function flicker() {
+      const el = heroSectionRef.current;
+      if (!el) return;
       const v = (0.82 + Math.random() * 0.22).toFixed(2);
-      document.body.style.filter = `brightness(${v})`;
+      el.style.filter = `brightness(${v})`;
       flickerTimer = setTimeout(() => {
-        document.body.style.filter = '';
+        el.style.filter = '';
         flickerTimer = setTimeout(flicker, 3500 + Math.random() * 8000);
       }, 40 + Math.random() * 130);
     }
@@ -855,12 +835,10 @@ export default function HomeClient() {
     }
 
     return () => {
-      clearTimeout(grainTimer);
       clearTimeout(flickerTimer);
       cancelAnimationFrame(heroRaf);
       cancelAnimationFrame(vizRaf);
-      if (grainLayer.parentNode) document.body.removeChild(grainLayer);
-      document.body.style.filter = '';
+      if (heroSectionRef.current) heroSectionRef.current.style.filter = '';
       window.removeEventListener('resize', onWireResize);
     };
   }, []);
@@ -891,7 +869,7 @@ export default function HomeClient() {
         </div>
       </nav>
 
-      {activeSection !== 'videos' && activeSection !== 'about' && <section className="hero">
+      {activeSection !== 'videos' && activeSection !== 'about' && <section className="hero" ref={heroSectionRef}>
         <div
           className="hero-bg"
           style={{ backgroundImage: activeSection === 'wolivo' ? 'none' : `url('${meta.cover}')`, opacity: activeSection === 'wolivo' ? 0 : 1 }}
@@ -951,7 +929,7 @@ export default function HomeClient() {
                 />
                 <iframe
                     ref={ytIframeRef}
-                    src={isPlaying ? ytSrc : ''}
+                    src={isPlaying ? ytSrc : undefined}
                     className="cassette-player-iframe"
                     title="audio"
                     allow="autoplay; encrypted-media"
