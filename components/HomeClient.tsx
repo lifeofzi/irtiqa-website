@@ -936,6 +936,10 @@ export default function HomeClient() {
             <div className="about-tag">Singer · Songwriter · Kashmir</div>
             <h2 className="about-name">Ali Saffudin</h2>
             <div className="about-hairline" />
+            <div className="about-portrait-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/ali.jpg" alt="Ali Saffudin — full portrait" className="about-portrait" />
+            </div>
             <p className="about-para">
               Ali Saffudin is a singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir.
               Raised in a Shia neighbourhood where elegies on the martyrdom of Imam Hussain

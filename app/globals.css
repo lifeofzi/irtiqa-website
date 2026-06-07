@@ -95,10 +95,12 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 
 /* ABOUT */
 .about-section{background:#000;min-height:100vh;padding-top:60px}
-.about-photo-wrap{position:relative;width:100%;max-height:70vh;overflow:hidden;line-height:0}
-.about-photo{width:100%;max-height:70vh;object-fit:cover;object-position:center top;filter:grayscale(20%) contrast(1.1);display:block}
-.about-photo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,#000 100%)}
+.about-photo-wrap{position:relative;width:100%;height:70vh;overflow:hidden;line-height:0}
+.about-photo{width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(20%) contrast(1.1);display:block}
+.about-photo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,#000 100%)}
 .about-body{max-width:720px;margin:0 auto;padding:48px 40px 80px}
+.about-portrait-wrap{margin:0 0 40px;line-height:0;border:1px solid rgba(192,0,0,.2)}
+.about-portrait{width:100%;display:block;filter:grayscale(15%) contrast(1.08)}
 .about-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px}
 .about-name{font-size:clamp(36px,7vw,72px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);margin-bottom:0;line-height:1}
 .about-hairline{width:60px;height:1px;background:var(--red);margin:24px 0 32px}
