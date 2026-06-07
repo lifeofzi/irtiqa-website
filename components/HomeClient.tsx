@@ -137,6 +137,7 @@ export default function HomeClient() {
   const pausedCassetteRef = useRef<HTMLCanvasElement>(null);
   const cassetteVideoRef = useRef<HTMLVideoElement>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
+  const ytInitializedRef = useRef(false);
   const eqRef = useRef<HTMLDivElement>(null);
   const wolivoBgRef = useRef<HTMLCanvasElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -328,9 +329,17 @@ export default function HomeClient() {
     setIsPlaying(true);
     setIsPausedByUser(false);
     cassetteVideoRef.current?.play();
-    setYtSrc(
-      `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
-    );
+    if (!ytInitializedRef.current) {
+      ytInitializedRef.current = true;
+      setYtSrc(
+        `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
+      );
+    } else {
+      ytIframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: 'loadVideoById', args: [TRACKS[idx].vid] }),
+        '*'
+      );
+    }
   }
 
   function togglePlayPause() {
@@ -951,10 +960,12 @@ export default function HomeClient() {
                 <video
                   ref={cassetteVideoRef}
                   src="/cassette-loop.webm"
+                  poster="/cassette-poster.jpg"
                   className="cassette-player-gif"
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                 />
                 <iframe
                     ref={ytIframeRef}
@@ -972,7 +983,7 @@ export default function HomeClient() {
                       <button onClick={togglePlayPause} className="cassette-ctrl-btn" aria-label={isPausedByUser ? 'Play' : 'Pause'}>
                         <span className="cassette-btn-body">
                           <span className="cassette-btn-label">
-                            {isPausedByUser ? '▶' : '⏸'}
+                            {isPausedByUser ? '▶︎' : '⏸︎'}
                           </span>
                         </span>
                         <span className="cassette-btn-shadow" />
@@ -994,7 +1005,7 @@ export default function HomeClient() {
                 >
                   <span className="track-num">{track.num}</span>
                   <span className="track-title">{track.title}</span>
-                  <span className="track-play">▶</span>
+                  <span className="track-play">▶︎</span>
                 </div>
               ))}
             </div>
@@ -1036,7 +1047,7 @@ export default function HomeClient() {
                 >
                   <span className="track-num">{track.num}</span>
                   <span className="track-title">{track.title}</span>
-                  <span className="track-play">▶</span>
+                  <span className="track-play">▶︎</span>
                 </div>
               ))}
             </div>
