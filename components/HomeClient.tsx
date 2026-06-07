@@ -137,7 +137,6 @@ export default function HomeClient() {
   const pausedCassetteRef = useRef<HTMLCanvasElement>(null);
   const cassetteVideoRef = useRef<HTMLVideoElement>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
-  const ytInitializedRef = useRef(false);
   const eqRef = useRef<HTMLDivElement>(null);
   const wolivoBgRef = useRef<HTMLCanvasElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -329,17 +328,9 @@ export default function HomeClient() {
     setIsPlaying(true);
     setIsPausedByUser(false);
     cassetteVideoRef.current?.play();
-    if (!ytInitializedRef.current) {
-      ytInitializedRef.current = true;
-      setYtSrc(
-        `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
-      );
-    } else {
-      ytIframeRef.current?.contentWindow?.postMessage(
-        JSON.stringify({ event: 'command', func: 'loadVideoById', args: [TRACKS[idx].vid] }),
-        '*'
-      );
-    }
+    setYtSrc(
+      `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
+    );
   }
 
   function togglePlayPause() {
@@ -973,6 +964,13 @@ export default function HomeClient() {
                     className="cassette-player-iframe"
                     title="audio"
                     allow="autoplay; encrypted-media"
+                    onLoad={() => {
+                      setTimeout(() => {
+                        ytIframeRef.current?.contentWindow?.postMessage(
+                          '{"event":"command","func":"playVideo","args":""}', '*'
+                        );
+                      }, 1000);
+                    }}
                   />
                 <div className={`cassette-player-overlay${!isPlaying ? ' cassette-player-overlay--idle' : ''}`}>
                   <div className="cassette-player-track">
