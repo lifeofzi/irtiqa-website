@@ -39,7 +39,8 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .artist{font-family:'Space Mono','Courier New',monospace;font-weight:700;font-size:clamp(14px,2.2vw,26px);letter-spacing:.18em;text-transform:uppercase;margin-top:20px;padding:10px 22px;background:var(--red);color:var(--black);display:inline-block;box-shadow:4px 4px 0 var(--bright);animation:fadeUp 1.5s 1s cubic-bezier(.22,1,.36,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .eq{display:flex;align-items:flex-end;gap:4px;height:54px;margin-top:44px;animation:fadeUp 2s 1.2s ease both}
-.eq-bar{width:5px;background:var(--red);border-radius:2px 2px 0 0;box-shadow:0 0 6px rgba(200,0,0,.5);animation:eqBounce var(--dur) var(--dly) ease-in-out infinite alternate}
+.eq-bar{width:5px;height:0;background:var(--red);border-radius:2px 2px 0 0;box-shadow:0 0 6px rgba(200,0,0,.5)}
+.eq--playing .eq-bar{animation:eqBounce var(--dur) var(--dly) ease-in-out infinite alternate}
 @keyframes eqBounce{from{height:4px;opacity:.3}to{height:var(--h);opacity:1}}
 
 /* TICKER */

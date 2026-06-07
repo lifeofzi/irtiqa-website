@@ -925,7 +925,7 @@ export default function HomeClient() {
             </div>
           </div>
           <div className="artist">Ali Saffudin</div>
-          <div className="eq" ref={eqRef} id="eq" />
+          <div className={`eq${isPlaying && !isPausedByUser ? ' eq--playing' : ''}`} ref={eqRef} id="eq" />
         </div>
       </section>}
 
