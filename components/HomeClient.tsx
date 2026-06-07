@@ -123,9 +123,8 @@ export default function HomeClient() {
   const [activeTrack, setActiveTrack] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPausedByUser, setIsPausedByUser] = useState(false);
-  const [ytSrc, setYtSrc] = useState(
-    `https://www.youtube.com/embed/${TRACKS[0].vid}?list=${PL}&rel=0&modestbranding=1&color=red`
-  );
+  // Fixed src — iframe stays loaded so loadVideoById works immediately on first tap
+  const ytSrc = `https://www.youtube.com/embed/${TRACKS[0].vid}?enablejsapi=1&rel=0&modestbranding=1&color=red`;
   const [activeWolivoTrack, setActiveWolivoTrack] = useState(0);
   const [wolivoSrc, setWolivoSrc] = useState(
     `https://www.youtube.com/embed/${WOLIVO_TRACKS[0].vid}?rel=0&modestbranding=1&color=red`
@@ -137,7 +136,6 @@ export default function HomeClient() {
   const pausedCassetteRef = useRef<HTMLCanvasElement>(null);
   const cassetteVideoRef = useRef<HTMLVideoElement>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
-  const ytInitializedRef = useRef(false);
   const eqRef = useRef<HTMLDivElement>(null);
   const wolivoBgRef = useRef<HTMLCanvasElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -328,28 +326,19 @@ export default function HomeClient() {
     const isMobile = typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
     setActiveTrack(idx);
     setIsPlaying(true);
+    const win = ytIframeRef.current?.contentWindow;
+    win?.postMessage(
+      JSON.stringify({ event: 'command', func: 'loadVideoById', args: [{ videoId: TRACKS[idx].vid, startSeconds: 0 }] }),
+      '*'
+    );
     if (isMobile) {
-      // On mobile, start paused so the play tap becomes the user gesture that unlocks audio
+      // Start paused — play tap is the user gesture that unlocks audio on mobile
       setIsPausedByUser(true);
       cassetteVideoRef.current?.pause();
     } else {
       setIsPausedByUser(false);
       cassetteVideoRef.current?.play();
-    }
-    if (!ytInitializedRef.current) {
-      ytInitializedRef.current = true;
-      setYtSrc(
-        `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=${isMobile ? 0 : 1}&enablejsapi=1&rel=0&modestbranding=1&color=red`
-      );
-    } else {
-      const win = ytIframeRef.current?.contentWindow;
-      win?.postMessage(
-        JSON.stringify({ event: 'command', func: 'loadVideoById', args: [{ videoId: TRACKS[idx].vid, startSeconds: 0 }] }),
-        '*'
-      );
-      if (!isMobile) {
-        win?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-      }
+      win?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     }
   }
 
@@ -991,7 +980,7 @@ export default function HomeClient() {
                 />
                 <iframe
                     ref={ytIframeRef}
-                    src={isPlaying ? ytSrc : undefined}
+                    src={ytSrc}
                     className="cassette-player-iframe"
                     title="audio"
                     allow="autoplay; encrypted-media"
