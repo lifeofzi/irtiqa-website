@@ -335,11 +335,13 @@ export default function HomeClient() {
         `https://www.youtube.com/embed/${TRACKS[idx].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`
       );
     } else {
-      // Send directly from user gesture so Safari propagates activation to iframe
-      ytIframeRef.current?.contentWindow?.postMessage(
+      const win = ytIframeRef.current?.contentWindow;
+      // Both messages sent from same user gesture — activation propagates to iframe
+      win?.postMessage(
         JSON.stringify({ event: 'command', func: 'loadVideoById', args: [{ videoId: TRACKS[idx].vid, startSeconds: 0 }] }),
         '*'
       );
+      win?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     }
   }
 
