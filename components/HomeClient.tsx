@@ -33,36 +33,36 @@ const SECTION_META: Record<Section, { label: string; titleEn: string; titleAr: s
 };
 
 const ALL_VIDEOS = [
-  { id: '-hWRjAw-v9I', title: 'Hamesha - Ali Saffudin (Official Music Video)' },
-  { id: 'cusm3o2uyH0', title: 'Ali Saffudin | Khoda Boozin | Official Visualiser' },
-  { id: 'WvoZHoUGEUw', title: 'Sahal Kar - Ali Saffudin | Hyder Dar (Official Video)' },
-  { id: 's8mTGn92OzI', title: 'Ali Saffudin | Wuzmal | KSL Anthem 2024' },
-  { id: 'Wdf8ABfO1m0', title: 'Mein Haidari Hoon - New Release' },
-  { id: 'GaqyGLVFLBY', title: 'Siyasat Ki Salaah | Urdu Blues Rock' },
-  { id: '_7pmMHlFx10', title: 'Inqalab o Inqalab - Live Jam' },
-  { id: 'STHEjJrY-iA', title: 'Zindagi Aur Motorcycle' },
-  { id: 'SslNonQ6fy8', title: 'Jinki wajah se | Live' },
-  { id: 'CxdR5t-25Qk', title: 'Ba Sahra Yem Sada | Rehman Rahi | Ali Saffudin' },
-  { id: 'DY81c_fTERY', title: 'AL AJAL YA MAHDI | ALI SAFFUDIN' },
-  { id: 'lSbg5eAh4lw', title: "Aah ko chahiye — Ghalib's Afzal Ghazal" },
-  { id: 'z_VVXqmkCuo', title: 'Haider Haider Bol' },
-  { id: 'pE52j6i6hjw', title: 'Zehni Ghulami | Wolivo | Azadi Records' },
-  { id: 'hGsXfL1IQAk', title: 'Fariyad | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: '_OIzpO3nwbY', title: 'Sleep Song | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: 'V5ycgOSmgFo', title: 'Kab Talak | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: 'GF_IvQI6at0', title: 'Behta Gaya | Wolivo | Ali Saffudin' },
-  { id: 'JCx5wxEwDM8', title: 'Wadiyon Mei | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: 'IXDNuj-hXPg', title: 'Wolivo | Ali Saffudin | Azadi Records' },
-  { id: '9KNBRvqykPU', title: 'Main Nahin Maanta | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: '7zhY1yReT30', title: 'Jinki Wajah Se | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: 'G2AyGm053V8', title: 'Walo Ha | Wolivo | Ali Saffudin | Azadi Records' },
-  { id: 'KQxqwd8oQZY', title: 'Sonay do | Ali Saffudin | Zeeshan Jaipuri' },
-  { id: '2WXBGAABXmA', title: 'SAAZ E QALB' },
-  { id: 'WROo1XIACMk', title: 'Tabsur | Ali Saffudin' },
-  { id: 'iqk2nQuEtfw', title: 'Haider Haider Saaee | Ali Saffudin | Zeeshan Jaipuri' },
-  { id: 'Jc9m69nBYC8', title: 'Ghalib in the mountains' },
-  { id: 'Kl8XYKlL88A', title: 'Remembrance' },
-  { id: 'FTkb2cvaaQk', title: 'Subhik Waav | Song Teaser' },
+  { id: 'WvoZHoUGEUw', title: 'Sahal Kar - Ali Saffudin | Hyder Dar (Official Video)', views: '126K' },
+  { id: '2WXBGAABXmA', title: 'SAAZ E QALB', views: '44K' },
+  { id: 'iqk2nQuEtfw', title: 'Haider Haider Saaee | Ali Saffudin | Zeeshan Jaipuri', views: '31K' },
+  { id: 'z_VVXqmkCuo', title: 'Haider Haider Bol', views: '24K' },
+  { id: 'KQxqwd8oQZY', title: 'Sonay do | Ali Saffudin | Zeeshan Jaipuri', views: '16K' },
+  { id: 'FTkb2cvaaQk', title: 'Subhik Waav | Song Teaser', views: '12K' },
+  { id: 'CxdR5t-25Qk', title: 'Ba Sahra Yem Sada | Rehman Rahi | Ali Saffudin', views: '10K' },
+  { id: 'WROo1XIACMk', title: 'Tabsur | Ali Saffudin', views: '10K' },
+  { id: 'G2AyGm053V8', title: 'Walo Ha | Wolivo | Ali Saffudin | Azadi Records', views: '9.8K' },
+  { id: 'Jc9m69nBYC8', title: 'Ghalib in the mountains', views: '9.8K' },
+  { id: 'DY81c_fTERY', title: 'AL AJAL YA MAHDI | ALI SAFFUDIN', views: '9.1K' },
+  { id: 'Kl8XYKlL88A', title: 'Remembrance', views: '8.3K' },
+  { id: 'hGsXfL1IQAk', title: 'Fariyad | Wolivo | Ali Saffudin | Azadi Records', views: '7K' },
+  { id: 'lSbg5eAh4lw', title: "Aah ko chahiye — Ghalib's Afzal Ghazal", views: '5.7K' },
+  { id: 'pE52j6i6hjw', title: 'Zehni Ghulami | Wolivo | Azadi Records', views: '5.2K' },
+  { id: '9KNBRvqykPU', title: 'Main Nahin Maanta | Wolivo | Ali Saffudin | Azadi Records', views: '5.2K' },
+  { id: 'cusm3o2uyH0', title: 'Ali Saffudin | Khoda Boozin | Official Visualiser', views: '4.9K' },
+  { id: 'JCx5wxEwDM8', title: 'Wadiyon Mei | Wolivo | Ali Saffudin | Azadi Records', views: '4.9K' },
+  { id: 'Wdf8ABfO1m0', title: 'Mein Haidari Hoon - New Release', views: '4.7K' },
+  { id: '_7pmMHlFx10', title: 'Inqalab o Inqalab - Live Jam', views: '4.5K' },
+  { id: '-hWRjAw-v9I', title: 'Hamesha - Ali Saffudin (Official Music Video)', views: '4.2K' },
+  { id: 's8mTGn92OzI', title: 'Ali Saffudin | Wuzmal | KSL Anthem 2024', views: '3.9K' },
+  { id: '7zhY1yReT30', title: 'Jinki Wajah Se | Wolivo | Ali Saffudin | Azadi Records', views: '3.6K' },
+  { id: 'IXDNuj-hXPg', title: 'Wolivo | Ali Saffudin | Azadi Records', views: '3.5K' },
+  { id: 'GaqyGLVFLBY', title: 'Siyasat Ki Salaah | Urdu Blues Rock', views: '3.3K' },
+  { id: '_OIzpO3nwbY', title: 'Sleep Song | Wolivo | Ali Saffudin | Azadi Records', views: '2.6K' },
+  { id: 'SslNonQ6fy8', title: 'Jinki wajah se | Live', views: '2.5K' },
+  { id: 'GF_IvQI6at0', title: 'Behta Gaya | Wolivo | Ali Saffudin', views: '2K' },
+  { id: 'STHEjJrY-iA', title: 'Zindagi Aur Motorcycle', views: '1.5K' },
+  { id: 'V5ycgOSmgFo', title: 'Kab Talak | Wolivo | Ali Saffudin | Azadi Records', views: '1.5K' },
 ];
 
 export default function HomeClient() {
@@ -75,16 +75,180 @@ export default function HomeClient() {
   const [wolivoSrc, setWolivoSrc] = useState(
     `https://www.youtube.com/embed/${WOLIVO_TRACKS[0].vid}?rel=0&modestbranding=1&color=red`
   );
-  const [activeVideo, setActiveVideo] = useState<{ id: string; title: string }>(ALL_VIDEOS[0]);
+  const [activeVideo, setActiveVideo] = useState<{ id: string; title: string; views: string }>(ALL_VIDEOS[0]);
 
   const meta = SECTION_META[activeSection];
 
   const eqRef = useRef<HTMLDivElement>(null);
+  const wolivoBgRef = useRef<HTMLCanvasElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const wireTopRef = useRef<HTMLCanvasElement>(null);
   const wireBotRef = useRef<HTMLCanvasElement>(null);
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
   const vizRef = useRef<HTMLCanvasElement>(null);
+
+  /* ── Wolivo floral background ── */
+  useEffect(() => {
+    const canvas = wolivoBgRef.current;
+    if (!canvas) return;
+    if (activeSection !== 'wolivo') { canvas.width = 0; return; }
+
+    const PAL = {
+      bg: '#080503',
+      vine: '#1C3A1A', vineLight: '#2E5A2A',
+      leafDark: '#284E26', leafLight: '#4E7C44', leafHi: '#6FA060',
+      red: '#A81520', crimson: '#7A0A10', orange: '#B84E0A',
+      gold: '#A87800', yellow: '#C49010', pink: '#8A1228',
+      petalHi: '#D05818', center: '#C49010', centerDot: '#6A4800',
+    };
+
+    function cubicBez(p0: number, p1: number, p2: number, p3: number, t: number) {
+      const m = 1 - t;
+      return m*m*m*p0 + 3*m*m*t*p1 + 3*m*t*t*p2 + t*t*t*p3;
+    }
+
+    interface Flower { x: number; y: number; r: number; color: string; np: number; phase: number }
+    interface Leaf { x: number; y: number; len: number; w: number; angle: number; color: string }
+    interface Vine { pts: {x:number;y:number}[] }
+    interface Scene { vines: Vine[]; flowers: Flower[]; leaves: Leaf[] }
+
+    function buildScene(W: number, H: number): Scene {
+      let seed = 7;
+      const rng = () => { seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF; return (seed >>> 0) / 0xFFFFFFFF; };
+      const flColors = [PAL.red, PAL.crimson, PAL.orange, PAL.pink, PAL.gold, PAL.yellow];
+      const vines: Vine[] = [], flowers: Flower[] = [], leaves: Leaf[] = [];
+
+      for (let i = 0; i < 22; i++) {
+        let sx: number, sy: number;
+        const edge = Math.floor(rng() * 4);
+        if (edge === 0) { sx = rng() * W; sy = -10; }
+        else if (edge === 1) { sx = rng() * W; sy = H + 10; }
+        else if (edge === 2) { sx = -10; sy = rng() * H; }
+        else { sx = W + 10; sy = rng() * H; }
+        const ex = rng() * W, ey = rng() * H;
+        const cx1 = rng() * W, cy1 = rng() * H, cx2 = rng() * W, cy2 = rng() * H;
+        const pts: {x:number;y:number}[] = [];
+        for (let s = 0; s <= 40; s++) {
+          const t = s / 40;
+          const x = cubicBez(sx, cx1, cx2, ex, t);
+          const y = cubicBez(sy, cy1, cy2, ey, t);
+          pts.push({ x, y });
+          if (s > 0 && s < 40 && rng() < 0.3) {
+            const prev = pts[pts.length - 2];
+            const ang = Math.atan2(y - prev.y, x - prev.x) + (rng() > 0.5 ? 1 : -1) * (Math.PI / 2 + (rng() - 0.5) * 0.7);
+            const ll = 10 + rng() * 24;
+            leaves.push({ x, y, len: ll, w: ll * 0.38, angle: ang, color: rng() > 0.5 ? PAL.leafDark : PAL.leafLight });
+          }
+        }
+        vines.push({ pts });
+        if (rng() > 0.15) flowers.push({ x: ex, y: ey, r: 9 + rng() * 17, color: flColors[Math.floor(rng() * flColors.length)], np: 5 + Math.floor(rng() * 3), phase: rng() * Math.PI * 2 });
+      }
+      for (let i = 0; i < 30; i++) {
+        flowers.push({ x: rng() * W, y: rng() * H, r: 5 + rng() * 14, color: flColors[Math.floor(rng() * flColors.length)], np: 5 + Math.floor(rng() * 3), phase: rng() * Math.PI * 2 });
+      }
+      return { vines, flowers, leaves };
+    }
+
+    function drawLeaf(ctx: CanvasRenderingContext2D, { x, y, len, w, angle, color }: Leaf) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(w * 0.5, -len * 0.25, w * 0.5, -len * 0.75, 0, -len);
+      ctx.bezierCurveTo(-w * 0.5, -len * 0.75, -w * 0.5, -len * 0.25, 0, 0);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(0, -1);
+      ctx.lineTo(0, -len + 1);
+      ctx.strokeStyle = PAL.leafHi;
+      ctx.lineWidth = 0.6;
+      ctx.globalAlpha = 0.35;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    function drawFlower(ctx: CanvasRenderingContext2D, { x, y, r, color, np, phase }: Flower, tick: number) {
+      const rot = phase + tick * 0.002;
+      for (let i = 0; i < np; i++) {
+        const a = (i / np) * Math.PI * 2 + rot;
+        ctx.beginPath();
+        ctx.ellipse(x + Math.cos(a) * r * 0.62, y + Math.sin(a) * r * 0.62, r * 0.4, r * 0.2, a, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+      for (let i = 0; i < np; i++) {
+        const a = (i / np) * Math.PI * 2 + rot + Math.PI / np;
+        ctx.beginPath();
+        ctx.ellipse(x + Math.cos(a) * r * 0.4, y + Math.sin(a) * r * 0.4, r * 0.26, r * 0.14, a, 0, Math.PI * 2);
+        ctx.fillStyle = PAL.petalHi;
+        ctx.globalAlpha = 0.65;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(x, y, r * 0.26, 0, Math.PI * 2); ctx.fillStyle = PAL.center; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, r * 0.13, 0, Math.PI * 2); ctx.fillStyle = PAL.centerDot; ctx.fill();
+      for (let i = 0; i < 7; i++) {
+        const a = (i / 7) * Math.PI * 2;
+        ctx.beginPath(); ctx.arc(x + Math.cos(a) * r * 0.2, y + Math.sin(a) * r * 0.2, r * 0.04, 0, Math.PI * 2);
+        ctx.fillStyle = PAL.centerDot; ctx.fill();
+      }
+    }
+
+    let scene: Scene;
+    let raf = 0;
+    let tick = 0;
+
+    const cv = canvas;
+
+    function resize() {
+      cv.width = cv.offsetWidth || window.innerWidth;
+      cv.height = cv.offsetHeight || window.innerHeight;
+      scene = buildScene(cv.width, cv.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function frame() {
+      tick++;
+      const ctx = cv.getContext('2d')!;
+      const W = cv.width, H = cv.height;
+
+      ctx.fillStyle = PAL.bg;
+      ctx.fillRect(0, 0, W, H);
+
+      const gr = ctx.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.5, Math.max(W, H) * 0.72);
+      gr.addColorStop(0, 'rgba(28,12,6,0.25)');
+      gr.addColorStop(1, 'rgba(4,2,1,0.55)');
+      ctx.fillStyle = gr;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.globalAlpha = 0.55;
+      scene.vines.forEach(({ pts }) => {
+        ctx.beginPath();
+        pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+        ctx.strokeStyle = PAL.vine; ctx.lineWidth = 1.8; ctx.stroke();
+        ctx.beginPath();
+        pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+        ctx.strokeStyle = PAL.vineLight; ctx.lineWidth = 0.7; ctx.globalAlpha = 0.25; ctx.stroke();
+        ctx.globalAlpha = 0.55;
+      });
+
+      ctx.globalAlpha = 0.62;
+      scene.leaves.forEach(l => drawLeaf(ctx, l));
+
+      ctx.globalAlpha = 0.72;
+      scene.flowers.forEach(f => drawFlower(ctx, f, tick));
+
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(frame);
+    }
+    frame();
+
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, [activeSection]);
 
   /* ── Track switching ── */
   function selectTrack(idx: number) {
@@ -634,11 +798,12 @@ export default function HomeClient() {
         ))}
       </nav>
 
-      <section className="hero">
+      {activeSection !== 'videos' && <section className="hero">
         <div
           className="hero-bg"
-          style={{ backgroundImage: `url('${meta.cover}')` }}
+          style={{ backgroundImage: activeSection === 'wolivo' ? 'none' : `url('${meta.cover}')`, opacity: activeSection === 'wolivo' ? 0 : 1 }}
         />
+        <canvas ref={wolivoBgRef} className={`wolivo-bg${activeSection === 'wolivo' ? ' visible' : ''}`} />
         <canvas className="hero-resist" ref={heroCanvasRef} />
         <div className="hero-content">
           <div className="title-row">
@@ -662,13 +827,16 @@ export default function HomeClient() {
           <div className="artist">Ali Saffudin</div>
           <div className="eq" ref={eqRef} id="eq" />
         </div>
-      </section>
+      </section>}
 
-      <div className="ticker-wrap" aria-hidden="true">
-        <div className="ticker" ref={tickerRef} />
-      </div>
-
-      <div className="wire-wrap"><canvas ref={wireTopRef} /></div>
+      {activeSection !== 'videos' && (
+        <>
+          <div className="ticker-wrap" aria-hidden="true">
+            <div className="ticker" ref={tickerRef} />
+          </div>
+          <div className="wire-wrap"><canvas ref={wireTopRef} /></div>
+        </>
+      )}
 
       {activeSection === 'irtiqa' ? (
         <section className="music">
@@ -791,7 +959,10 @@ export default function HomeClient() {
                   alt={v.title}
                   loading="lazy"
                 />
-                <div className="video-card-title">{v.title}</div>
+                <div className="video-card-title">
+                  {v.title}
+                  <span className="video-views">{v.views}</span>
+                </div>
               </div>
             ))}
           </div>

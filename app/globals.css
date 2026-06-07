@@ -10,6 +10,8 @@ body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Ari
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:110px 20px 60px;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center 30%;background-repeat:no-repeat;filter:blur(45px) brightness(.07) saturate(.2);transform:scale(1.18);transition:background-image .4s ease}
 .hero-resist{position:absolute;inset:0;z-index:1;pointer-events:none;width:100%;height:100%}
+.wolivo-bg{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:none}
+.wolivo-bg.visible{display:block}
 .hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center}
 
 .title-row{display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;animation:fadeDown 1.1s cubic-bezier(.22,1,.36,1) both}
@@ -111,7 +113,8 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .video-card.active{background:rgba(192,0,0,.14)}
 .video-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;filter:grayscale(30%) contrast(1.05);transition:filter .2s}
 .video-card:hover img,.video-card.active img{filter:grayscale(0%) contrast(1.1)}
-.video-card-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:10px 12px;line-height:1.45;transition:color .2s}
+.video-card-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:10px 12px;line-height:1.45;transition:color .2s;display:flex;flex-direction:column;gap:4px}
+.video-views{font-size:9px;letter-spacing:.1em;color:var(--red);opacity:.7}
 .video-card:hover .video-card-title{color:rgba(255,255,255,.8)}
 .video-card.active .video-card-title{color:var(--white)}
 .video-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)}
