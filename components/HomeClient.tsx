@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const TRACKS = [
   { vid: 'brnIKzYLdp4', num: '01', title: 'Fariyadras' },
@@ -33,8 +34,45 @@ const SECTION_META: Record<Section, { label: string; titleEn: string; titleAr: s
   about:  { label: 'ABOUT',       titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
 };
 
+const STREAMING = [
+  {
+    label: 'Spotify',
+    url: 'https://open.spotify.com/artist/0J3PUchbuLhyRD6RxFQrrE',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
+        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Apple Music',
+    url: 'https://music.apple.com/us/artist/ali-saffudin/1456350962',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
+        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.44c1.45.07 2.45.82 3.3.82.8 0 2.3-.96 3.88-.82 1.64.13 2.88.93 3.67 2.45-3.32 2.13-2.78 6.55.39 8.05-.52 1.37-1.23 2.72-3.22 4.34zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'YouTube Music',
+    url: 'https://music.youtube.com/channel/UCpSS-5kQeow4IGs6Z4dq76w',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden>
+        <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+      </svg>
+    ),
+  },
+];
+
 const ALL_VIDEOS = [
+  { id: 'EL-hMaWoLlk', title: 'MAYI CHANI — A Song for the Love of Kashmir', views: '1.5M' },
+  { id: '5H-BJKdtT50', title: 'Rah Bakshtam | Habba Khatoon | Ali Saffudin', views: '1M' },
+  { id: 'VTpp9XLVNTU', title: 'Gah Chon — Ali Saffudin | Sarangi and Guitar', views: '864K' },
   { id: 'WvoZHoUGEUw', title: 'Sahal Kar - Ali Saffudin | Hyder Dar (Official Video)', views: '126K' },
+  { id: '-hWRjAw-v9I', title: 'Hamesha - Ali Saffudin (Official Music Video)', views: '4.2K' },
+  { id: 'fj57xdsuCBE', title: 'Jawano | Ali Saffudin | Complex Doppio Sessions', views: '' },
+  { id: 'q0sB8GAZPzw', title: 'Zindagi Kya | Ali Saffudin | Complex Doppio Sessions', views: '' },
+  { id: 'G6aT0M2VKls', title: 'Bumbroo | Ali Saffudin | Complex Doppio Sessions', views: '' },
   { id: '2WXBGAABXmA', title: 'SAAZ E QALB', views: '44K' },
   { id: 'iqk2nQuEtfw', title: 'Haider Haider Saaee | Ali Saffudin | Zeeshan Jaipuri', views: '31K' },
   { id: 'z_VVXqmkCuo', title: 'Haider Haider Bol', views: '24K' },
@@ -54,7 +92,6 @@ const ALL_VIDEOS = [
   { id: 'JCx5wxEwDM8', title: 'Wadiyon Mei | Wolivo | Ali Saffudin | Azadi Records', views: '4.9K' },
   { id: 'Wdf8ABfO1m0', title: 'Mein Haidari Hoon - New Release', views: '4.7K' },
   { id: '_7pmMHlFx10', title: 'Inqalab o Inqalab - Live Jam', views: '4.5K' },
-  { id: '-hWRjAw-v9I', title: 'Hamesha - Ali Saffudin (Official Music Video)', views: '4.2K' },
   { id: 's8mTGn92OzI', title: 'Ali Saffudin | Wuzmal | KSL Anthem 2024', views: '3.9K' },
   { id: '7zhY1yReT30', title: 'Jinki Wajah Se | Wolivo | Ali Saffudin | Azadi Records', views: '3.6K' },
   { id: 'IXDNuj-hXPg', title: 'Wolivo | Ali Saffudin | Azadi Records', views: '3.5K' },
@@ -62,12 +99,22 @@ const ALL_VIDEOS = [
   { id: '_OIzpO3nwbY', title: 'Sleep Song | Wolivo | Ali Saffudin | Azadi Records', views: '2.6K' },
   { id: 'SslNonQ6fy8', title: 'Jinki wajah se | Live', views: '2.5K' },
   { id: 'GF_IvQI6at0', title: 'Behta Gaya | Wolivo | Ali Saffudin', views: '2K' },
-  { id: 'STHEjJrY-iA', title: 'Zindagi Aur Motorcycle', views: '1.5K' },
   { id: 'V5ycgOSmgFo', title: 'Kab Talak | Wolivo | Ali Saffudin | Azadi Records', views: '1.5K' },
 ];
 
 export default function HomeClient() {
-  const [activeSection, setActiveSection] = useState<Section>('irtiqa');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialSection = (searchParams.get('s') as Section | null);
+  const validSections: Section[] = ['irtiqa', 'wolivo', 'videos', 'about'];
+  const [activeSection, setActiveSection] = useState<Section>(
+    initialSection && validSections.includes(initialSection) ? initialSection : 'irtiqa'
+  );
+
+  function navigateTo(s: Section) {
+    setActiveSection(s);
+    router.replace(`?s=${s}`, { scroll: false });
+  }
   const [activeTrack, setActiveTrack] = useState(0);
   const [ytSrc, setYtSrc] = useState(
     `https://www.youtube.com/embed/${TRACKS[0].vid}?list=${PL}&rel=0&modestbranding=1&color=red`
@@ -788,15 +835,24 @@ export default function HomeClient() {
       <div className="vignette" />
 
       <nav className="top-nav" aria-label="Content sections">
-        {(['irtiqa', 'wolivo', 'videos', 'about'] as Section[]).map((s) => (
-          <button
-            key={s}
-            className={`top-tab${activeSection === s ? ' active' : ''}`}
-            onClick={() => setActiveSection(s)}
-          >
-            {SECTION_META[s].label}
-          </button>
-        ))}
+        <div className="top-tabs">
+          {(['irtiqa', 'wolivo', 'videos', 'about'] as Section[]).map((s) => (
+            <button
+              key={s}
+              className={`top-tab${activeSection === s ? ' active' : ''}`}
+              onClick={() => navigateTo(s)}
+            >
+              {SECTION_META[s].label}
+            </button>
+          ))}
+        </div>
+        <div className="top-stream-icons">
+          {STREAMING.map((s) => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="top-stream-icon" title={s.label}>
+              {s.icon}
+            </a>
+          ))}
+        </div>
       </nav>
 
       {activeSection !== 'videos' && activeSection !== 'about' && <section className="hero">
@@ -863,6 +919,8 @@ export default function HomeClient() {
               </div>
             </div>
             <div className="tracklist-col">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/cassette.jpg" alt="" aria-hidden className="cassette-bg" />
               <div className="tracklist-head">Tracklist — Irtiqa EP</div>
               {TRACKS.map((track, idx) => (
                 <div
@@ -933,38 +991,40 @@ export default function HomeClient() {
             <div className="about-photo-overlay" />
           </div>
           <div className="about-body">
-            <div className="about-tag">Singer · Songwriter · Kashmir</div>
-            <h2 className="about-name">Ali Saffudin</h2>
-            <div className="about-hairline" />
-            <div className="about-portrait-wrap">
+            <div className="about-portrait-col">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/ali.jpg" alt="Ali Saffudin — full portrait" className="about-portrait" />
+              <img src="/ali.jpg" alt="Ali Saffudin" className="about-portrait" />
             </div>
-            <p className="about-para">
-              Ali Saffudin is a singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir.
-              Raised in a Shia neighbourhood where elegies on the martyrdom of Imam Hussain
-              were a way of life, music entered him early — not as performance, but as testimony.
-            </p>
-            <p className="about-para">
-              He studied fine arts at Delhi University before returning to Kashmir in 2014,
-              completing a Masters in Mass Communication at Kashmir University. He has spent
-              the years since making music that refuses to separate beauty from resistance.
-            </p>
-            <p className="about-para">
-              His early work drew from the classical Kashmiri folk tradition — reworking ballads
-              by 16th-century poetess Habba Khatoon into pop without losing their original soul.
-              But his range runs wider: punk, grunge, heavy metal, folk, and rock all surface in
-              his writing, which moves fluidly between Kashmiri and Urdu, between grief and defiance.
-            </p>
-            <p className="about-para">
-              In 2022, he released <em>Wolivo</em> on Azadi Records — a 10-track debut album
-              that tells the story of a boy whose heartland is torn apart by conflict. It is an
-              act of catharsis, condemnation, and reformation. In 2026, he returns with <em>IRTIQA</em> —
-              four tracks, one question: how high can you rise?
-            </p>
-            <div className="about-contact-block">
-              <span className="about-contact-label">Contact</span>
-              <a className="about-contact-email" href="mailto:alisaffudin@gmail.com">alisaffudin@gmail.com</a>
+            <div className="about-text-col">
+              <div className="about-tag">Singer · Songwriter · Kashmir</div>
+              <h2 className="about-name">Ali Saffudin</h2>
+              <div className="about-hairline" />
+              <p className="about-para">
+                Ali Saffudin is a singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir.
+                Raised in a Shia neighbourhood where elegies on the martyrdom of Imam Hussain
+                were a way of life, music entered him early — not as performance, but as testimony.
+              </p>
+              <p className="about-para">
+                He studied fine arts at Delhi University before returning to Kashmir in 2014,
+                completing a Masters in Mass Communication at Kashmir University. He has spent
+                the years since making music that refuses to separate beauty from resistance.
+              </p>
+              <p className="about-para">
+                His early work drew from the classical Kashmiri folk tradition — reworking ballads
+                by 16th-century poetess Habba Khatoon into pop without losing their original soul.
+                But his range runs wider: punk, grunge, heavy metal, folk, and rock all surface in
+                his writing, which moves fluidly between Kashmiri and Urdu, between grief and defiance.
+              </p>
+              <p className="about-para">
+                In 2022, he released <em>Wolivo</em> on Azadi Records — a 10-track debut album
+                that tells the story of a boy whose heartland is torn apart by conflict. It is an
+                act of catharsis, condemnation, and reformation. In 2026, he returns with <em>IRTIQA</em> —
+                four tracks, one question: how high can you rise?
+              </p>
+              <div className="about-contact-block">
+                <span className="about-contact-label">Contact</span>
+                <a className="about-contact-email" href="mailto:alisaffudin@gmail.com">alisaffudin@gmail.com</a>
+              </div>
             </div>
           </div>
         </section>
@@ -1003,10 +1063,7 @@ export default function HomeClient() {
                   alt={v.title}
                   loading="lazy"
                 />
-                <div className="video-card-title">
-                  {v.title}
-                  <span className="video-views">{v.views}</span>
-                </div>
+                <div className="video-card-title">{v.title}</div>
               </div>
             ))}
           </div>
