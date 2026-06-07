@@ -112,6 +112,11 @@ export default function HomeClient() {
   );
 
   function navigateTo(s: Section) {
+    if (s !== 'irtiqa' && isPlaying && !isPausedByUser) {
+      cassetteVideoRef.current?.pause();
+      ytIframeRef.current?.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      setIsPausedByUser(true);
+    }
     setActiveSection(s);
     router.replace(`?s=${s}`, { scroll: false });
   }
@@ -374,6 +379,28 @@ export default function HomeClient() {
         ticker.appendChild(s);
       });
     }
+
+    /* ── GRAIN overlay ── */
+    const S = 128;
+    const grainLayer = document.createElement('canvas');
+    grainLayer.width = grainLayer.height = S;
+    grainLayer.style.cssText =
+      'position:fixed;inset:0;opacity:.012;pointer-events:none;z-index:9997;width:100%;height:100%;image-rendering:pixelated';
+    document.body.appendChild(grainLayer);
+    const gc = grainLayer.getContext('2d')!;
+    let grainTimer: ReturnType<typeof setTimeout>;
+    function tickGrain() {
+      const d = gc.createImageData(S, S);
+      const p = d.data;
+      for (let i = 0; i < p.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        p[i] = p[i + 1] = p[i + 2] = v;
+        p[i + 3] = 255;
+      }
+      gc.putImageData(d, 0, 0);
+      grainTimer = setTimeout(tickGrain, 80);
+    }
+    tickGrain();
 
     /* ── VHS Flicker ── */
     let flickerTimer: ReturnType<typeof setTimeout>;
@@ -835,6 +862,8 @@ export default function HomeClient() {
     }
 
     return () => {
+      clearTimeout(grainTimer);
+      if (grainLayer.parentNode) document.body.removeChild(grainLayer);
       clearTimeout(flickerTimer);
       cancelAnimationFrame(heroRaf);
       cancelAnimationFrame(vizRaf);
