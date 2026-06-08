@@ -935,13 +935,13 @@ export default function HomeClient() {
           </div>
           <div className="artist">Ali Saffudin</div>
           <div className="hero-stream-links">
-            <a href="https://open.spotify.com/album/7ywkGokC4VJcQwqSM4CXuN" target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="Spotify">
+            <a href={activeSection === 'wolivo' ? 'https://open.spotify.com/album/5Qn6xtn4tjzf0He630r4XN' : 'https://open.spotify.com/album/7ywkGokC4VJcQwqSM4CXuN'} target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="Spotify">
               <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
             </a>
-            <a href="https://www.youtube.com/playlist?list=OLAK5uy_mGlIUjQvewEWnAZFDXhViSu3fB0VVoGRE" target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="YouTube Music">
+            <a href={activeSection === 'wolivo' ? 'https://music.youtube.com/playlist?list=OLAK5uy_lOCkO1qrTTKSBaGMoeH_ydFQsgoBx1i0A&si=sF8bA0sW3-xpexZI' : 'https://www.youtube.com/playlist?list=OLAK5uy_mGlIUjQvewEWnAZFDXhViSu3fB0VVoGRE'} target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="YouTube Music">
               <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
             </a>
-            <a href="https://music.apple.com/us/album/irtiqa-ep/6773801507" target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="Apple Music">
+            <a href={activeSection === 'wolivo' ? 'https://music.apple.com/in/album/wolivo/1804721802' : 'https://music.apple.com/us/album/irtiqa-ep/6773801507'} target="_blank" rel="noopener noreferrer" className="hero-stream-link" title="Apple Music">
               <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.08-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.28.07 2.17.74 2.93.8 1.12-.23 2.19-.91 3.39-.84 1.44.12 2.53.66 3.22 1.67-2.88 1.74-2.2 5.49.48 6.54-.57 1.52-1.31 3.02-2.02 4.69zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
             </a>
           </div>
