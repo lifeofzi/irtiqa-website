@@ -4,6 +4,15 @@ import { useEffect, useState, useCallback } from 'react';
 
 type StatusFilter = 'all' | 'paid' | 'shipped' | 'delivered';
 
+interface Stats {
+  total: number;
+  pending: number;
+  paid: number;
+  shipped: number;
+  delivered: number;
+  revenue: number;
+}
+
 interface Order {
   id: string;
   razorpay_order_id: string;
@@ -30,6 +39,7 @@ const STATUS_COLORS: Record<string, React.CSSProperties> = {
 export default function OrdersPage() {
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [orders, setOrders] = useState<Order[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [working, setWorking] = useState<string | null>(null);
@@ -41,6 +51,7 @@ export default function OrdersPage() {
       const res = await fetch(`/api/admin/orders?status=${filter}`);
       const data = await res.json();
       setOrders(data.orders || []);
+      if (data.stats) setStats(data.stats);
     } finally {
       setLoading(false);
     }
@@ -83,12 +94,43 @@ export default function OrdersPage() {
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 28 }}>
-        <div style={{ fontSize: 22, fontWeight: 'bold', letterSpacing: '0.1em', color: '#c00000' }}>ORDERS</div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.3em' }}>
-          {orders.length} {filter !== 'all' ? filter : 'total'}
+      <div style={{ fontSize: 22, fontWeight: 'bold', letterSpacing: '0.1em', color: '#c00000', marginBottom: 24 }}>ORDERS</div>
+
+      {stats && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 32 }}>
+          {[
+            { label: 'Total Orders', value: stats.total, color: '#f0f0f0' },
+            { label: 'Awaiting Ship', value: stats.paid, color: '#00aa44' },
+            { label: 'Shipped', value: stats.shipped, color: '#c00000' },
+            { label: 'Delivered', value: stats.delivered, color: '#0088cc' },
+            { label: 'Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, color: '#c00000' },
+          ].map(({ label, value, color }) => (
+            <div key={label} style={{ border: '1px solid rgba(192,0,0,0.18)', background: 'rgba(192,0,0,0.03)', padding: '16px 20px' }}>
+              <div style={{ fontSize: 9, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 10 }}>{label}</div>
+              <div style={{ fontSize: 28, fontWeight: 'bold', color, fontFamily: "'Courier New',monospace", lineHeight: 1 }}>{value}</div>
+            </div>
+          ))}
+          <div style={{ border: '1px solid rgba(192,0,0,0.18)', background: 'rgba(192,0,0,0.03)', padding: '16px 20px', gridColumn: 'span 1' }}>
+            <div style={{ fontSize: 9, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 12 }}>Breakdown</div>
+            {(['paid', 'shipped', 'delivered'] as const).map(s => {
+              const count = stats[s];
+              const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+              const barColor = s === 'paid' ? '#00aa44' : s === 'shipped' ? '#c00000' : '#0088cc';
+              return (
+                <div key={s} style={{ marginBottom: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.2em', marginBottom: 4 }}>
+                    <span style={{ textTransform: 'uppercase' }}>{s}</span>
+                    <span style={{ color: barColor }}>{count}</span>
+                  </div>
+                  <div style={{ height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
+                    <div style={{ height: 3, width: `${pct}%`, background: barColor, borderRadius: 2, transition: 'width 0.4s ease' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       <div style={{ display: 'flex', gap: 4, marginBottom: 28, flexWrap: 'wrap' }}>
         {filters.map(s => (

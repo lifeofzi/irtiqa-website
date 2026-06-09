@@ -14,12 +14,32 @@ export async function GET(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const status = req.nextUrl.searchParams.get('status');
-  let query = db().from('orders').select('*').order('created_at', { ascending: false });
-  if (status && status !== 'all') query = query.eq('status', status);
+  const supabase = db();
 
-  const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ orders: data });
+  const [filteredResult, allResult] = await Promise.all([
+    (() => {
+      let q = supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (status && status !== 'all') q = q.eq('status', status);
+      return q;
+    })(),
+    supabase.from('orders').select('status, product_price'),
+  ]);
+
+  if (filteredResult.error) return NextResponse.json({ error: filteredResult.error.message }, { status: 500 });
+
+  const all = allResult.data || [];
+  const stats = {
+    total: all.length,
+    pending: all.filter(o => o.status === 'pending').length,
+    paid: all.filter(o => o.status === 'paid').length,
+    shipped: all.filter(o => o.status === 'shipped').length,
+    delivered: all.filter(o => o.status === 'delivered').length,
+    revenue: all
+      .filter(o => ['paid', 'shipped', 'delivered'].includes(o.status))
+      .reduce((sum, o) => sum + (o.product_price || 0), 0),
+  };
+
+  return NextResponse.json({ orders: filteredResult.data, stats });
 }
 
 export async function PATCH(req: NextRequest) {

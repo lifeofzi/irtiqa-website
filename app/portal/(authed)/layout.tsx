@@ -35,9 +35,13 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   return (
     <div style={{ minHeight: '100vh', background: '#050505', fontFamily: "'Courier New',monospace" }}>
       <nav style={{ borderBottom: '1px solid rgba(192,0,0,0.2)', padding: '0 32px', display: 'flex', alignItems: 'center', height: 52, gap: 8 }}>
-        <div style={{ color: '#c00000', fontSize: 15, fontWeight: 'bold', letterSpacing: '0.15em', marginRight: 'auto' }}>
-          IRTIQA{' '}
-          <span style={{ fontSize: 9, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.25)', fontWeight: 'normal' }}>PORTAL</span>
+        <div style={{ marginRight: 'auto' }}>
+          <div style={{ color: '#c00000', fontSize: 15, fontWeight: 'bold', letterSpacing: '0.15em', lineHeight: 1.1 }}>
+            Ali Saffudin
+          </div>
+          <div style={{ fontSize: 8, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase' }}>
+            Merch Portal
+          </div>
         </div>
         {tab('ORDERS', '/portal/orders')}
         {tab('INVENTORY', '/portal/inventory')}

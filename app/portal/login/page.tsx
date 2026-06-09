@@ -36,11 +36,11 @@ export default function LoginPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: 340, padding: '48px 36px', border: '1px solid rgba(192,0,0,0.22)', background: 'rgba(192,0,0,0.03)' }}>
-        <div style={{ fontFamily: "'Courier New',monospace", fontSize: 26, fontWeight: 'bold', letterSpacing: '0.15em', color: '#c00000', marginBottom: 4 }}>
-          IRTIQA
+        <div style={{ fontFamily: "'Courier New',monospace", fontSize: 22, fontWeight: 'bold', letterSpacing: '0.1em', color: '#c00000', marginBottom: 2 }}>
+          Ali Saffudin
         </div>
-        <div style={{ fontFamily: "'Courier New',monospace", fontSize: 9, letterSpacing: '0.5em', color: 'rgba(255,255,255,0.25)', marginBottom: 40 }}>
-          PORTAL ACCESS
+        <div style={{ fontFamily: "'Courier New',monospace", fontSize: 8, letterSpacing: '0.5em', color: 'rgba(255,255,255,0.25)', marginBottom: 40, textTransform: 'uppercase' }}>
+          Merch Portal
         </div>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <input
