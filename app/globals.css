@@ -178,3 +178,117 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .video-card:hover .video-card-title{color:rgba(255,255,255,.8)}
 .video-card.active .video-card-title{color:var(--white)}
 .video-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)}
+
+/* MERCH SECTION */
+.merch-section{background:#000;border-top:1px solid rgba(192,0,0,.15);min-height:100vh;padding-top:60px}
+.merch-header{padding:48px 40px 36px;display:flex;align-items:baseline;gap:24px;border-bottom:1px solid rgba(192,0,0,.18);flex-wrap:wrap}
+@media(max-width:760px){.merch-header{padding:24px 16px 20px;gap:12px}}
+.merch-back-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;background:none;border:1px solid rgba(192,0,0,.7);color:var(--white);padding:8px 16px;cursor:pointer;margin-left:auto;transition:color .2s,border-color .2s,background .2s}
+.merch-back-btn:hover{background:var(--red);border-color:var(--red)}
+
+/* Grid */
+.merch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(192,0,0,.12);max-width:720px;margin:0 auto}
+@media(max-width:600px){.merch-grid{grid-template-columns:1fr;max-width:360px}}
+.merch-card{background:#060000;display:flex;flex-direction:column;cursor:pointer;transition:background .2s;position:relative;overflow:hidden}
+.merch-card:hover{background:rgba(192,0,0,.07)}
+.merch-card:hover .merch-card-visual{filter:brightness(.85)}
+.merch-card-visual{width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#0d0000 0%,#1a0000 50%,#080000 100%);border-bottom:1px solid rgba(192,0,0,.15);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:filter .3s;position:relative}
+.merch-card-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(192,0,0,.12) 0%,transparent 65%)}
+.merch-card-visual-img{width:100%;height:100%;object-fit:cover;display:block}
+.merch-card-visual-text{font-family:'Oswald',Impact,sans-serif;font-size:clamp(14px,2vw,20px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,0,0,.28);text-align:center;padding:0 20px;line-height:1.3}
+.merch-card-body{padding:20px 24px;display:flex;flex-direction:column;gap:6px;flex:1}
+.merch-card-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--red);opacity:.6}
+.merch-card-name{font-family:'Oswald',Impact,sans-serif;font-size:clamp(18px,2.5vw,22px);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--white);line-height:1.1}
+.merch-card-subtitle{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.merch-card-price{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--red);letter-spacing:.04em;margin-top:2px}
+.merch-card-sizes{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.merch-size-pip{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.35);border:1px solid rgba(192,0,0,.22);padding:2px 7px;text-transform:uppercase}
+.merch-size-pip--lg{font-size:10px;padding:4px 10px;color:rgba(255,255,255,.5);border-color:rgba(192,0,0,.3)}
+.merch-card-cta{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);opacity:.5;margin-top:10px;transition:opacity .2s}
+.merch-card:hover .merch-card-cta{opacity:1}
+
+/* Detail page */
+.merch-detail{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 180px);border-bottom:1px solid rgba(192,0,0,.15)}
+@media(max-width:760px){.merch-detail{grid-template-columns:1fr}}
+.merch-detail-left{border-right:1px solid rgba(192,0,0,.15);padding:40px}
+@media(max-width:760px){.merch-detail-left{border-right:none;border-bottom:1px solid rgba(192,0,0,.15);padding:24px}}
+
+/* Image gallery */
+.merch-gallery{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
+.merch-gallery-main{width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#0d0000 0%,#1a0000 50%,#080000 100%);border:1px solid rgba(192,0,0,.15);overflow:hidden;position:relative}
+.merch-gallery-main::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 40%,rgba(192,0,0,.15) 0%,transparent 65%);pointer-events:none}
+.merch-gallery-img{width:100%;height:100%;object-fit:cover;display:block}
+.merch-gallery-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px}
+.merch-gallery-placeholder-text{font-family:'Oswald',Impact,sans-serif;font-size:clamp(22px,4vw,40px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,0,0,.28);text-align:center;line-height:1.2}
+.merch-gallery-placeholder-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:rgba(192,0,0,.2)}
+.merch-gallery-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.merch-thumb{width:72px;height:72px;border:1px solid rgba(192,0,0,.2);background:#0a0000;padding:0;cursor:pointer;overflow:hidden;transition:border-color .2s;flex-shrink:0}
+.merch-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.merch-thumb.active{border-color:var(--red)}
+.merch-thumb:hover{border-color:rgba(192,0,0,.6)}
+
+/* Detail info */
+.merch-detail-info{padding:60px 48px;display:flex;flex-direction:column;gap:0}
+@media(max-width:760px){.merch-detail-info{padding:32px 20px}}
+.merch-detail-name{font-family:'Oswald',Impact,sans-serif;font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--white);margin:10px 0 4px;line-height:1}
+.merch-detail-subtitle{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+.merch-detail-price{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--red);letter-spacing:.04em}
+.merch-detail-hairline{width:48px;height:1px;background:var(--red);margin:28px 0}
+.merch-detail-desc{font-family:'Space Mono',monospace;font-size:13px;line-height:1.9;color:rgba(255,255,255,.6);letter-spacing:.02em;margin-bottom:28px}
+.merch-detail-sizes-wrap{margin-bottom:24px}
+.merch-detail-sizes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.merch-detail-sizes-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--red);opacity:.6}
+.merch-size-picker{display:flex;gap:8px;flex-wrap:wrap}
+.merch-size-btn{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55);background:none;border:1px solid rgba(192,0,0,.3);padding:8px 14px;cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.merch-size-btn:hover{color:var(--white);border-color:rgba(192,0,0,.7)}
+.merch-size-btn.active{color:var(--black);background:var(--red);border-color:var(--red)}
+.merch-size-hint{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.25);margin-top:10px}
+.merch-size-guide-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;transition:color .2s}
+.merch-size-guide-btn:hover{color:var(--red)}
+.merch-detail-note{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:rgba(255,255,255,.2);margin-bottom:32px;padding-top:20px;border-top:1px solid rgba(192,0,0,.12)}
+.merch-detail-buy{width:100%;padding:16px;font-size:12px}
+
+/* Size chart modal */
+.merch-size-chart-modal{background:#0a0000;border:1px solid rgba(192,0,0,.35);max-width:680px;width:100%;padding:36px;position:relative;max-height:90vh;overflow-y:auto}
+.merch-size-chart-title{font-family:'Oswald',Impact,sans-serif;font-size:20px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:24px}
+.merch-size-chart-img{width:100%;display:block;border:1px solid rgba(192,0,0,.15)}
+.merch-size-chart-note{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.3);margin-top:16px}
+
+/* Shared buy button */
+.merch-buy-btn{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;background:var(--red);color:var(--black);border:none;padding:12px 20px;cursor:pointer;transition:background .2s;font-weight:700;display:block}
+.merch-buy-btn:hover{background:var(--bright)}
+.merch-buy-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Checkout modal */
+.merch-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.merch-modal{background:#0a0000;border:1px solid rgba(192,0,0,.4);max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;position:relative}
+.merch-modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer;padding:4px 8px;transition:color .2s}
+.merch-modal-close:hover{color:var(--red)}
+.merch-modal-product{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(192,0,0,.2)}
+.merch-modal-name{font-family:'Oswald',Impact,sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--white);margin:6px 0 4px}
+.merch-form{display:flex;flex-direction:column;gap:16px}
+.merch-form-field{display:flex;flex-direction:column;gap:6px}
+.merch-form-field label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--red);opacity:.7}
+.merch-form-field input,.merch-form-field textarea,.merch-form-field select{background:rgba(255,255,255,.05);border:1px solid rgba(192,0,0,.3);color:var(--white);padding:10px 12px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.03em;width:100%;resize:vertical;outline:none;transition:border-color .2s}
+.merch-form-field input:focus,.merch-form-field textarea:focus,.merch-form-field select:focus{border-color:var(--red)}
+.merch-form-field select option{background:#0a0000}
+.merch-form-error{font-family:'Space Mono',monospace;font-size:11px;color:var(--bright);letter-spacing:.04em;padding:10px 12px;border:1px solid rgba(255,34,34,.25);background:rgba(255,34,34,.05)}
+.merch-submit-btn{margin-top:8px}
+/* Spinner */
+.merch-spinner-box{display:flex;flex-direction:column;align-items:center;gap:20px}
+.merch-spinner{width:40px;height:40px;border:2px solid rgba(192,0,0,.2);border-top-color:var(--red);border-radius:50%;animation:merch-spin .7s linear infinite}
+.merch-spinner-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.merch-btn-spinner{display:flex;align-items:center;justify-content:center;gap:10px}
+.merch-spinner-inline{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:merch-spin .7s linear infinite;flex-shrink:0}
+@keyframes merch-spin{to{transform:rotate(360deg)}}
+
+/* Full-page order success */
+.merch-order-success{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:60px 24px;text-align:center;gap:24px}
+.merch-order-success-icon{width:72px;height:72px;border-radius:50%;border:2px solid var(--red);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--red);animation:riseIn .6s cubic-bezier(.22,1,.36,1) both}
+.merch-order-success-title{font-family:'Oswald',Impact,sans-serif;font-size:clamp(32px,6vw,56px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--white);animation:riseIn .7s .1s cubic-bezier(.22,1,.36,1) both}
+.merch-order-success-msg{font-family:'Space Mono',monospace;font-size:13px;line-height:2;color:rgba(255,255,255,.55);max-width:400px;animation:riseIn .8s .2s cubic-bezier(.22,1,.36,1) both}
+.merch-order-success-msg strong{color:var(--white)}
+.merch-order-success-btn{padding:14px 40px;font-size:11px;animation:riseIn .9s .3s cubic-bezier(.22,1,.36,1) both}
+.merch-order-id{display:flex;flex-direction:column;gap:4px;background:rgba(192,0,0,.08);border:1px solid rgba(192,0,0,.2);padding:16px 32px;animation:riseIn .85s .25s cubic-bezier(.22,1,.36,1) both}
+.merch-order-id-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.merch-order-id-value{font-family:'Space Mono',monospace;font-size:13px;font-weight:bold;color:var(--red);letter-spacing:.05em;word-break:break-all}

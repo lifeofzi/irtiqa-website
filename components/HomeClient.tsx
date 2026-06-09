@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import MerchSection from './MerchSection';
 
 const TRACKS = [
   { vid: 'brnIKzYLdp4', num: '01', title: 'Fariyadras' },
@@ -25,13 +26,14 @@ const WOLIVO_TRACKS = [
   { vid: 'G2AyGm053V8', num: '10', title: 'Walo Ha' },
 ];
 
-type Section = 'irtiqa' | 'wolivo' | 'videos' | 'about';
+type Section = 'irtiqa' | 'wolivo' | 'videos' | 'about' | 'merch';
 
 const SECTION_META: Record<Section, { label: string; titleEn: string; titleAr: string; cover: string; tag: string; epLabel: string }> = {
   irtiqa: { label: 'IRTIQA EP',   titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: 'Full Album', epLabel: 'EP · 2026 · 4 Tracks' },
   wolivo: { label: 'WOLIVO',      titleEn: 'WOLIVO',  titleAr: '',       cover: '/wolivo.webp', tag: 'Album',      epLabel: '2022 · 10 Tracks' },
   videos: { label: 'ALL VIDEOS',  titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
   about:  { label: 'ABOUT',       titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
+  merch:  { label: 'MERCH',       titleEn: 'IRTIQA', titleAr: 'ارتقا', cover: '/cover.jpg',   tag: '',           epLabel: '' },
 };
 
 const STREAMING = [
@@ -106,7 +108,7 @@ export default function HomeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialSection = (searchParams.get('s') as Section | null);
-  const validSections: Section[] = ['irtiqa', 'wolivo', 'videos', 'about'];
+  const validSections: Section[] = ['irtiqa', 'wolivo', 'videos', 'about', 'merch'];
   const [activeSection, setActiveSection] = useState<Section>(
     initialSection && validSections.includes(initialSection) ? initialSection : 'irtiqa'
   );
@@ -888,7 +890,7 @@ export default function HomeClient() {
 
       <nav className="top-nav" aria-label="Content sections">
         <div className="top-tabs">
-          {(['irtiqa', 'wolivo', 'videos', 'about'] as Section[]).map((s) => (
+          {(['irtiqa', 'wolivo', 'videos', 'about', 'merch'] as Section[]).map((s) => (
             <button
               key={s}
               className={`top-tab${activeSection === s ? ' active' : ''}`}
@@ -907,7 +909,7 @@ export default function HomeClient() {
         </div>
       </nav>
 
-      {activeSection !== 'videos' && activeSection !== 'about' && <section className="hero" ref={heroSectionRef}>
+      {activeSection !== 'videos' && activeSection !== 'about' && activeSection !== 'merch' && <section className="hero" ref={heroSectionRef}>
         <div
           className="hero-bg"
           style={{ backgroundImage: activeSection === 'wolivo' ? 'none' : `url('${meta.cover}')`, opacity: activeSection === 'wolivo' ? 0 : 1 }}
@@ -949,7 +951,7 @@ export default function HomeClient() {
         </div>
       </section>}
 
-      {activeSection !== 'videos' && activeSection !== 'about' && (
+      {activeSection !== 'videos' && activeSection !== 'about' && activeSection !== 'merch' && (
         <>
           <div className="ticker-wrap" aria-hidden="true">
             <div className="ticker" ref={tickerRef} />
@@ -1112,6 +1114,8 @@ export default function HomeClient() {
             </div>
           </div>
         </section>
+      ) : activeSection === 'merch' ? (
+        <MerchSection />
       ) : (
         <section className="videos-section">
           <div className="videos-header">
