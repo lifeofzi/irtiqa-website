@@ -45,20 +45,21 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { orderId, status, trackingId } = await req.json();
+  const { orderId, status, trackingId, trackingLink } = await req.json();
   if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 });
 
   const supabase = db();
   const updates: Record<string, string> = {};
   if (status) updates.status = status;
   if (trackingId) updates.tracking_id = trackingId;
+  if (trackingLink) updates.tracking_link = trackingLink;
 
   if (!Object.keys(updates).length) return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
 
   const { error } = await supabase.from('orders').update(updates).eq('razorpay_order_id', orderId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  if (status === 'shipped' && trackingId) {
+  if (status === 'shipped') {
     const { data: order } = await supabase
       .from('orders')
       .select('buyer_email, buyer_name, product_name')
@@ -79,12 +80,17 @@ export async function PATCH(req: NextRequest) {
             <hr style="border:none;border-top:1px solid rgba(192,0,0,.3);margin:24px 0;" />
             <p style="color:#f0f0f0;">Hi ${order.buyer_name},</p>
             <p style="color:rgba(255,255,255,.7);line-height:1.8;">Your order for <strong style="color:#f0f0f0;">${order.product_name}</strong> has shipped and is on its way to you.</p>
-            <div style="margin:32px 0;text-align:center;">
-              <a href="${trackingId}" target="_blank" style="display:inline-block;background:#c00000;color:#f0f0f0;text-decoration:none;padding:14px 36px;font-family:monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;">
+            <div style="background:rgba(192,0,0,.08);border:1px solid rgba(192,0,0,.2);padding:20px;margin:24px 0;">
+              <p style="color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.4em;text-transform:uppercase;margin-bottom:8px;">Tracking ID</p>
+              <p style="color:#f0f0f0;font-size:15px;font-weight:bold;margin:0 0 16px;letter-spacing:.05em;">${trackingId || '—'}</p>
+              ${trackingLink ? `
+              <p style="color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.4em;text-transform:uppercase;margin-bottom:12px;">Track Online</p>
+              <a href="${trackingLink}" target="_blank" style="display:inline-block;background:#c00000;color:#f0f0f0;text-decoration:none;padding:12px 28px;font-family:monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;">
                 TRACK YOUR ORDER
               </a>
+              ` : ''}
             </div>
-            <p style="color:rgba(255,255,255,.4);font-size:11px;text-align:center;">Or copy this link: <a href="${trackingId}" style="color:#c00000;">${trackingId}</a></p>
+            <p style="color:rgba(255,255,255,.6);font-size:13px;">Use the tracking ID or the link above to follow your shipment.</p>
             <hr style="border:none;border-top:1px solid rgba(192,0,0,.2);margin:24px 0;" />
             <p style="color:rgba(255,255,255,.25);font-size:11px;letter-spacing:.2em;">Ali Saffudin · IRTIQA · alisaffudin@gmail.com</p>
           </div>

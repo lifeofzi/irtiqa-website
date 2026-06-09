@@ -13,9 +13,13 @@ create table if not exists orders (
   buyer_phone text,
   buyer_address text not null,
   status text default 'pending' check (status in ('pending', 'paid', 'shipped', 'delivered')),
-  tracking_id text,
+  tracking_id   text,
+  tracking_link text,
   created_at timestamptz default now()
 );
+
+-- If updating an existing table, run:
+-- alter table orders add column if not exists tracking_link text;
 
 create table if not exists inventory (
   product_id text not null,

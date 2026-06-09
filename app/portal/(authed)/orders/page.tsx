@@ -26,6 +26,7 @@ interface Order {
   buyer_address: string;
   status: string;
   tracking_id: string | null;
+  tracking_link: string | null;
   created_at: string;
 }
 
@@ -46,6 +47,7 @@ export default function OrdersPage() {
 
   // Ship modal state
   const [shipModal, setShipModal] = useState<Order | null>(null);
+  const [trackingId, setTrackingId] = useState('');
   const [trackingLink, setTrackingLink] = useState('');
   const [shipping, setShipping] = useState(false);
   const trackingInputRef = useRef<HTMLInputElement>(null);
@@ -66,6 +68,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (shipModal) {
+      setTrackingId('');
       setTrackingLink('');
       setTimeout(() => trackingInputRef.current?.focus(), 50);
     }
@@ -78,14 +81,14 @@ export default function OrdersPage() {
 
   async function confirmShip() {
     if (!shipModal) return;
-    const link = trackingLink.trim();
-    if (!link) { trackingInputRef.current?.focus(); return; }
+    const id = trackingId.trim();
+    if (!id) { trackingInputRef.current?.focus(); return; }
     setShipping(true);
     try {
       const res = await fetch('/api/admin/orders', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId: shipModal.razorpay_order_id, status: 'shipped', trackingId: link }),
+        body: JSON.stringify({ orderId: shipModal.razorpay_order_id, status: 'shipped', trackingId: id, trackingLink: trackingLink.trim() || undefined }),
       });
       if (res.ok) {
         setShipModal(null);
@@ -137,10 +140,22 @@ export default function OrdersPage() {
             </div>
 
             <div style={{ fontSize: 10, letterSpacing: '0.3em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 8 }}>
-              Tracking Link
+              Tracking ID <span style={{ color: '#c00000' }}>*</span>
             </div>
             <input
               ref={trackingInputRef}
+              type="text"
+              placeholder="e.g. 1234567890"
+              value={trackingId}
+              onChange={e => setTrackingId(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Escape') setShipModal(null); }}
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(192,0,0,0.4)', color: '#f0f0f0', padding: '10px 14px', fontFamily: "'Courier New',monospace", fontSize: 12, width: '100%', outline: 'none', boxSizing: 'border-box', marginBottom: 20 }}
+            />
+
+            <div style={{ fontSize: 10, letterSpacing: '0.3em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 8 }}>
+              Tracking Link <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9, letterSpacing: '0.1em', textTransform: 'none' }}>(optional)</span>
+            </div>
+            <input
               type="url"
               placeholder="https://track.delhivery.com/..."
               value={trackingLink}
@@ -149,14 +164,14 @@ export default function OrdersPage() {
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(192,0,0,0.4)', color: '#f0f0f0', padding: '10px 14px', fontFamily: "'Courier New',monospace", fontSize: 12, width: '100%', outline: 'none', boxSizing: 'border-box', marginBottom: 8 }}
             />
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em', marginBottom: 28 }}>
-              This link will be emailed to {shipModal.buyer_email} as a clickable button.
+              Both will be in the email. Link shows as a "Track Your Order" button.
             </div>
 
             <div style={{ display: 'flex', gap: 10 }}>
               <button
                 onClick={confirmShip}
-                disabled={shipping || !trackingLink.trim()}
-                style={{ flex: 1, background: shipping || !trackingLink.trim() ? 'rgba(192,0,0,0.4)' : '#c00000', color: '#f0f0f0', border: 'none', padding: '11px 0', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.35em', cursor: shipping || !trackingLink.trim() ? 'default' : 'pointer' }}
+                disabled={shipping || !trackingId.trim()}
+                style={{ flex: 1, background: shipping || !trackingId.trim() ? 'rgba(192,0,0,0.4)' : '#c00000', color: '#f0f0f0', border: 'none', padding: '11px 0', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.35em', cursor: shipping || !trackingId.trim() ? 'default' : 'pointer' }}
               >
                 {shipping ? '...' : 'SEND & MARK SHIPPED'}
               </button>
@@ -264,11 +279,12 @@ export default function OrdersPage() {
                   ['Order ID', order.razorpay_order_id],
                   order.razorpay_payment_id ? ['Payment ID', order.razorpay_payment_id] : null,
                   ['Date', new Date(order.created_at).toLocaleString('en-IN')],
-                  order.tracking_id ? ['Tracking', order.tracking_id] : null,
+                  order.tracking_id ? ['Tracking ID', order.tracking_id] : null,
+                  order.tracking_link ? ['Tracking Link', order.tracking_link] : null,
                 ].filter((x): x is string[] => x !== null).map(([label, value]) => (
                   <div key={label}>
                     <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', marginRight: 8 }}>{label}</span>
-                    {label === 'Tracking'
+                    {label === 'Tracking Link'
                       ? <a href={value} target="_blank" rel="noopener noreferrer" style={{ color: '#c00000', textDecoration: 'underline' }}>{value}</a>
                       : <span>{value}</span>
                     }
