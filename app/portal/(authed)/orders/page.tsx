@@ -250,8 +250,8 @@ export default function OrdersPage() {
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', marginBottom: 6 }}>₹{order.product_price}</div>
-                  <span style={{ fontSize: 9, letterSpacing: '0.4em', padding: '3px 10px', border: '1px solid', ...(STATUS_COLORS[order.status] || STATUS_COLORS.pending) }}>
-                    {order.status.toUpperCase()}
+                  <span style={{ fontSize: 9, letterSpacing: '0.4em', padding: '3px 10px', border: '1px solid', ...(STATUS_COLORS[order.status ?? 'pending'] || STATUS_COLORS.pending) }}>
+                    {(order.status ?? 'pending').toUpperCase()}
                   </span>
                 </div>
               </div>
