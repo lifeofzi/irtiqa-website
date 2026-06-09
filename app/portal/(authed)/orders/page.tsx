@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 type StatusFilter = 'all' | 'paid' | 'shipped' | 'delivered';
 
@@ -30,9 +30,9 @@ interface Order {
 }
 
 const STATUS_COLORS: Record<string, React.CSSProperties> = {
-  pending: { color: 'rgba(255,255,255,0.4)', borderColor: 'rgba(255,255,255,0.2)' },
-  paid:    { color: '#00aa44', borderColor: '#00aa44' },
-  shipped: { color: '#c00000', borderColor: '#c00000' },
+  pending:   { color: 'rgba(255,255,255,0.4)', borderColor: 'rgba(255,255,255,0.2)' },
+  paid:      { color: '#00aa44', borderColor: '#00aa44' },
+  shipped:   { color: '#c00000', borderColor: '#c00000' },
   delivered: { color: '#0088cc', borderColor: '#0088cc' },
 };
 
@@ -41,9 +41,14 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [working, setWorking] = useState<string | null>(null);
   const [toast, setToast] = useState('');
+
+  // Ship modal state
+  const [shipModal, setShipModal] = useState<Order | null>(null);
+  const [trackingLink, setTrackingLink] = useState('');
+  const [shipping, setShipping] = useState(false);
+  const trackingInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -59,29 +64,53 @@ export default function OrdersPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useEffect(() => {
+    if (shipModal) {
+      setTrackingLink('');
+      setTimeout(() => trackingInputRef.current?.focus(), 50);
+    }
+  }, [shipModal]);
+
   function flash(msg: string) {
     setToast(msg);
     setTimeout(() => setToast(''), 3200);
   }
 
-  async function patch(orderId: string, body: object) {
-    setWorking(orderId);
+  async function confirmShip() {
+    if (!shipModal) return;
+    const link = trackingLink.trim();
+    if (!link) { trackingInputRef.current?.focus(); return; }
+    setShipping(true);
     try {
       const res = await fetch('/api/admin/orders', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, ...body }),
+        body: JSON.stringify({ orderId: shipModal.razorpay_order_id, status: 'shipped', trackingId: link }),
       });
       if (res.ok) {
-        flash(body && 'status' in body && (body as { status: string }).status === 'shipped' ? 'Marked shipped — tracking email sent' : 'Updated');
+        setShipModal(null);
+        flash('Marked shipped — tracking email sent to ' + shipModal.buyer_email);
         load();
       } else {
         const d = await res.json();
         flash(d.error || 'Error');
       }
     } finally {
-      setWorking(null);
+      setShipping(false);
     }
+  }
+
+  async function markDelivered(orderId: string) {
+    setWorking(orderId);
+    try {
+      const res = await fetch('/api/admin/orders', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status: 'delivered' }),
+      });
+      if (res.ok) { flash('Marked delivered'); load(); }
+      else { const d = await res.json(); flash(d.error || 'Error'); }
+    } finally { setWorking(null); }
   }
 
   const filters: StatusFilter[] = ['all', 'paid', 'shipped', 'delivered'];
@@ -94,23 +123,71 @@ export default function OrdersPage() {
         </div>
       )}
 
+      {/* Ship modal */}
+      {shipModal && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 24 }}
+          onClick={e => { if (e.target === e.currentTarget) setShipModal(null); }}
+        >
+          <div style={{ background: '#0c0c0c', border: '1px solid rgba(192,0,0,0.35)', padding: '36px 32px', width: '100%', maxWidth: 480, fontFamily: "'Courier New',monospace" }}>
+            <div style={{ fontSize: 11, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 6 }}>Mark Shipped</div>
+            <div style={{ fontSize: 18, fontWeight: 'bold', color: '#f0f0f0', marginBottom: 2 }}>{shipModal.buyer_name}</div>
+            <div style={{ fontSize: 12, color: '#c00000', marginBottom: 28 }}>
+              {shipModal.product_name}{shipModal.size ? ` · ${shipModal.size}` : ''}
+            </div>
+
+            <div style={{ fontSize: 10, letterSpacing: '0.3em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 8 }}>
+              Tracking Link
+            </div>
+            <input
+              ref={trackingInputRef}
+              type="url"
+              placeholder="https://track.delhivery.com/..."
+              value={trackingLink}
+              onChange={e => setTrackingLink(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') confirmShip(); if (e.key === 'Escape') setShipModal(null); }}
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(192,0,0,0.4)', color: '#f0f0f0', padding: '10px 14px', fontFamily: "'Courier New',monospace", fontSize: 12, width: '100%', outline: 'none', boxSizing: 'border-box', marginBottom: 8 }}
+            />
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.1em', marginBottom: 28 }}>
+              This link will be emailed to {shipModal.buyer_email} as a clickable button.
+            </div>
+
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={confirmShip}
+                disabled={shipping || !trackingLink.trim()}
+                style={{ flex: 1, background: shipping || !trackingLink.trim() ? 'rgba(192,0,0,0.4)' : '#c00000', color: '#f0f0f0', border: 'none', padding: '11px 0', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.35em', cursor: shipping || !trackingLink.trim() ? 'default' : 'pointer' }}
+              >
+                {shipping ? '...' : 'SEND & MARK SHIPPED'}
+              </button>
+              <button
+                onClick={() => setShipModal(null)}
+                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.35)', padding: '11px 20px', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.3em', cursor: 'pointer' }}
+              >
+                CANCEL
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ fontSize: 22, fontWeight: 'bold', letterSpacing: '0.1em', color: '#c00000', marginBottom: 24 }}>ORDERS</div>
 
       {stats && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 32 }}>
           {[
-            { label: 'Total Orders', value: stats.total, color: '#f0f0f0' },
-            { label: 'Awaiting Ship', value: stats.paid, color: '#00aa44' },
-            { label: 'Shipped', value: stats.shipped, color: '#c00000' },
-            { label: 'Delivered', value: stats.delivered, color: '#0088cc' },
-            { label: 'Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, color: '#c00000' },
+            { label: 'Total Orders',   value: stats.total,                                    color: '#f0f0f0' },
+            { label: 'Awaiting Ship',  value: stats.paid,                                     color: '#00aa44' },
+            { label: 'Shipped',        value: stats.shipped,                                  color: '#c00000' },
+            { label: 'Delivered',      value: stats.delivered,                                color: '#0088cc' },
+            { label: 'Revenue',        value: `₹${stats.revenue.toLocaleString('en-IN')}`,   color: '#c00000' },
           ].map(({ label, value, color }) => (
             <div key={label} style={{ border: '1px solid rgba(192,0,0,0.18)', background: 'rgba(192,0,0,0.03)', padding: '16px 20px' }}>
               <div style={{ fontSize: 9, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 10 }}>{label}</div>
               <div style={{ fontSize: 28, fontWeight: 'bold', color, fontFamily: "'Courier New',monospace", lineHeight: 1 }}>{value}</div>
             </div>
           ))}
-          <div style={{ border: '1px solid rgba(192,0,0,0.18)', background: 'rgba(192,0,0,0.03)', padding: '16px 20px', gridColumn: 'span 1' }}>
+          <div style={{ border: '1px solid rgba(192,0,0,0.18)', background: 'rgba(192,0,0,0.03)', padding: '16px 20px' }}>
             <div style={{ fontSize: 9, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 12 }}>Breakdown</div>
             {(['paid', 'shipped', 'delivered'] as const).map(s => {
               const count = stats[s];
@@ -189,28 +266,23 @@ export default function OrdersPage() {
                   ['Date', new Date(order.created_at).toLocaleString('en-IN')],
                   order.tracking_id ? ['Tracking', order.tracking_id] : null,
                 ].filter((x): x is string[] => x !== null).map(([label, value]) => (
-                  <div key={label as string}>
+                  <div key={label}>
                     <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', marginRight: 8 }}>{label}</span>
-                    <span style={label === 'Tracking' ? { color: '#c00000' } : {}}>{value}</span>
+                    {label === 'Tracking'
+                      ? <a href={value} target="_blank" rel="noopener noreferrer" style={{ color: '#c00000', textDecoration: 'underline' }}>{value}</a>
+                      : <span>{value}</span>
+                    }
                   </div>
                 ))}
               </div>
 
               {order.status === 'paid' && (
-                <div style={{ borderTop: '1px solid rgba(192,0,0,0.15)', paddingTop: 16, marginTop: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  <input
-                    type="text"
-                    placeholder="Tracking ID"
-                    value={trackingInputs[order.razorpay_order_id] || ''}
-                    onChange={e => setTrackingInputs(t => ({ ...t, [order.razorpay_order_id]: e.target.value }))}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(192,0,0,0.3)', color: '#f0f0f0', padding: '8px 12px', fontFamily: "'Courier New',monospace", fontSize: 12, flex: 1, minWidth: 200, outline: 'none' }}
-                  />
+                <div style={{ borderTop: '1px solid rgba(192,0,0,0.15)', paddingTop: 16, marginTop: 16 }}>
                   <button
-                    disabled={busy}
-                    onClick={() => patch(order.razorpay_order_id, { status: 'shipped', trackingId: trackingInputs[order.razorpay_order_id]?.trim() })}
-                    style={{ background: busy ? 'rgba(192,0,0,0.4)' : '#c00000', color: '#f0f0f0', border: 'none', padding: '8px 20px', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.3em', cursor: busy ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
+                    onClick={() => setShipModal(order)}
+                    style={{ background: '#c00000', color: '#f0f0f0', border: 'none', padding: '9px 24px', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.3em', cursor: 'pointer' }}
                   >
-                    {busy ? '...' : 'MARK SHIPPED'}
+                    MARK SHIPPED
                   </button>
                 </div>
               )}
@@ -219,7 +291,7 @@ export default function OrdersPage() {
                 <div style={{ borderTop: '1px solid rgba(192,0,0,0.15)', paddingTop: 16, marginTop: 16 }}>
                   <button
                     disabled={busy}
-                    onClick={() => patch(order.razorpay_order_id, { status: 'delivered' })}
+                    onClick={() => markDelivered(order.razorpay_order_id)}
                     style={{ background: 'rgba(0,136,204,0.12)', color: '#0088cc', border: '1px solid rgba(0,136,204,0.35)', padding: '8px 20px', fontFamily: "'Courier New',monospace", fontSize: 10, letterSpacing: '0.3em', cursor: busy ? 'default' : 'pointer' }}
                   >
                     {busy ? '...' : 'MARK DELIVERED'}

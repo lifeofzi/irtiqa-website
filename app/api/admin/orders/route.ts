@@ -74,15 +74,16 @@ export async function PATCH(req: NextRequest) {
         html: `
           <div style="font-family:monospace;background:#050505;color:#f0f0f0;padding:40px;max-width:600px;">
             <h1 style="color:#c00000;letter-spacing:.1em;text-transform:uppercase;font-size:28px;">IRTIQA</h1>
-            <p style="color:rgba(255,255,255,.6);font-size:12px;letter-spacing:.3em;text-transform:uppercase;margin-top:8px;">Order Shipped</p>
+            <p style="color:rgba(255,255,255,.6);font-size:12px;letter-spacing:.3em;text-transform:uppercase;margin-top:8px;">Your order is on the way</p>
             <hr style="border:none;border-top:1px solid rgba(192,0,0,.3);margin:24px 0;" />
             <p style="color:#f0f0f0;">Hi ${order.buyer_name},</p>
-            <p style="color:rgba(255,255,255,.7);line-height:1.8;">Your order for <strong style="color:#f0f0f0;">${order.product_name}</strong> has shipped.</p>
-            <div style="background:rgba(192,0,0,.08);border:1px solid rgba(192,0,0,.2);padding:20px;margin:24px 0;">
-              <p style="color:rgba(255,255,255,.5);font-size:11px;letter-spacing:.4em;text-transform:uppercase;margin-bottom:12px;">Tracking ID</p>
-              <p style="color:#c00000;font-size:16px;letter-spacing:.1em;margin:0;">${trackingId}</p>
+            <p style="color:rgba(255,255,255,.7);line-height:1.8;">Your order for <strong style="color:#f0f0f0;">${order.product_name}</strong> has shipped and is on its way to you.</p>
+            <div style="margin:32px 0;text-align:center;">
+              <a href="${trackingId}" target="_blank" style="display:inline-block;background:#c00000;color:#f0f0f0;text-decoration:none;padding:14px 36px;font-family:monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;">
+                TRACK YOUR ORDER
+              </a>
             </div>
-            <p style="color:rgba(255,255,255,.6);font-size:13px;">Use this ID to track your shipment.</p>
+            <p style="color:rgba(255,255,255,.4);font-size:11px;text-align:center;">Or copy this link: <a href="${trackingId}" style="color:#c00000;">${trackingId}</a></p>
             <hr style="border:none;border-top:1px solid rgba(192,0,0,.2);margin:24px 0;" />
             <p style="color:rgba(255,255,255,.25);font-size:11px;letter-spacing:.2em;">Ali Saffudin · IRTIQA · alisaffudin@gmail.com</p>
           </div>
