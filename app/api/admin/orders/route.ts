@@ -70,6 +70,7 @@ export async function PATCH(req: NextRequest) {
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL!,
         to: order.buyer_email,
+        bcc: ['zaman.ishtiyaq@gmail.com', 'alisaffudin@gmail.com'],
         subject: `Your order has shipped — ${order.product_name}`,
         html: `
           <div style="font-family:monospace;background:#050505;color:#f0f0f0;padding:40px;max-width:600px;">
