@@ -230,7 +230,7 @@ export default function MerchSection() {
           {PRODUCTS.map((product) => (
             <div
               key={product.id}
-              className="merch-card"
+              className={`merch-card${product.sizeChartType === 'none' ? ' merch-card--accessory' : ''}`}
               onClick={() => openDetail(product)}
               role="button"
               tabIndex={0}
