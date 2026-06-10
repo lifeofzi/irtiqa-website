@@ -98,20 +98,23 @@ export default function MerchSection() {
   // Sync state when browser back/forward changes ?p=
   useEffect(() => {
     const p = searchParams.get('p');
-    setDetailProduct(PRODUCTS.find(prod => prod.id === p) ?? null);
+    const product = PRODUCTS.find(prod => prod.id === p) ?? null;
+    setDetailProduct(product);
+    if (product) {
+      setOutOfStock({});
+      fetch(`/api/stock?productId=${product.id}`)
+        .then(r => r.json())
+        .then(d => setOutOfStock(d.outOfStock || {}))
+        .catch(() => {});
+    }
   }, [searchParams]);
 
   function openDetail(product: Product) {
     setActiveImageIdx(0);
     setPickedSize('');
     setSizeChartOpen(false);
-    setOutOfStock({});
     router.replace(`?s=merch&p=${product.id}`, { scroll: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    fetch(`/api/stock?productId=${product.id}`)
-      .then(r => r.json())
-      .then(d => setOutOfStock(d.outOfStock || {}))
-      .catch(() => {});
   }
 
   function closeDetail() {
