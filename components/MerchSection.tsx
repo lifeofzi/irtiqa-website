@@ -88,6 +88,7 @@ export default function MerchSection() {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [pickedSize, setPickedSize] = useState('');
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
+  const [outOfStock, setOutOfStock] = useState<Record<string, boolean>>({});
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalState, setModalState] = useState<ModalState>('form');
   const [form, setForm] = useState<BuyerForm>({ name: '', email: '', phone: '', address: '', size: '' });
@@ -104,8 +105,13 @@ export default function MerchSection() {
     setActiveImageIdx(0);
     setPickedSize('');
     setSizeChartOpen(false);
+    setOutOfStock({});
     router.replace(`?s=merch&p=${product.id}`, { scroll: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    fetch(`/api/stock?productId=${product.id}`)
+      .then(r => r.json())
+      .then(d => setOutOfStock(d.outOfStock || {}))
+      .catch(() => {});
   }
 
   function closeDetail() {
@@ -305,15 +311,21 @@ export default function MerchSection() {
                 </select>
               ) : (
                 <div className="merch-size-picker">
-                  {detailProduct.sizes.map((s) => (
-                    <button
-                      key={s}
-                      className={`merch-size-btn${pickedSize === s ? ' active' : ''}`}
-                      onClick={() => setPickedSize(s)}
-                    >
-                      {s}
-                    </button>
-                  ))}
+                  {detailProduct.sizes.map((s) => {
+                    const oos = outOfStock[s];
+                    return (
+                      <button
+                        key={s}
+                        className={`merch-size-btn${pickedSize === s ? ' active' : ''}${oos ? ' sold-out' : ''}`}
+                        onClick={() => !oos && setPickedSize(s)}
+                        disabled={oos}
+                        title={oos ? 'Sold out' : undefined}
+                      >
+                        {s}
+                        {oos && <span className="merch-size-oos-line" />}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
               {!pickedSize && <p className="merch-size-hint">Select a {detailProduct.sizeLabel.toLowerCase()}</p>}
