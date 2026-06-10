@@ -15,23 +15,28 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Get stock limit from inventory table, fall back to 10
+    // Get stock limit from inventory table, fall back to 10 only if row doesn't exist
     const { data: invRow } = await supabase
       .from('inventory')
       .select('stock')
       .eq('product_id', productId)
       .eq('size', size || '__none__')
-      .single();
-    const stockLimit = invRow?.stock ?? 10;
+      .maybeSingle();
+    const stockLimit = invRow != null ? invRow.stock : 10;
+
+    // Stock set to 0 — block immediately
+    if (stockLimit === 0) {
+      return NextResponse.json({ error: `Size ${size || 'selected'} is out of stock.` }, { status: 409 });
+    }
 
     // Count paid/shipped/delivered orders for this product+size
-    const countQuery = supabase
+    let countQuery = supabase
       .from('orders')
       .select('*', { count: 'exact', head: true })
       .eq('product_id', productId)
       .in('status', ['paid', 'shipped', 'delivered']);
 
-    if (size) countQuery.eq('size', size);
+    if (size) countQuery = countQuery.eq('size', size);
 
     const { count } = await countQuery;
 
