@@ -250,9 +250,12 @@ export default function MerchSection() {
                 <div className="merch-card-subtitle">{product.subtitle}</div>
                 <div className="merch-card-price">₹{product.price}</div>
                 <div className="merch-card-sizes">
-                  {product.sizes.map((s) => (
-                    <span key={s} className="merch-size-pip">{s}</span>
-                  ))}
+                  {product.sizeChartType === 'none'
+                    ? <span className="merch-size-pip">{product.sizes.length} models</span>
+                    : product.sizes.map((s) => (
+                        <span key={s} className="merch-size-pip">{s}</span>
+                      ))
+                  }
                 </div>
                 <div className="merch-card-cta">View →</div>
               </div>
@@ -282,23 +285,38 @@ export default function MerchSection() {
 
             <div className="merch-detail-sizes-wrap">
               <div className="merch-detail-sizes-header">
-                <span className="merch-detail-sizes-label">Size</span>
-                <button className="merch-size-guide-btn" onClick={() => setSizeChartOpen(true)}>
-                  Size Guide
-                </button>
-              </div>
-              <div className="merch-size-picker">
-                {detailProduct.sizes.map((s) => (
-                  <button
-                    key={s}
-                    className={`merch-size-btn${pickedSize === s ? ' active' : ''}`}
-                    onClick={() => setPickedSize(s)}
-                  >
-                    {s}
+                <span className="merch-detail-sizes-label">{detailProduct.sizeLabel}</span>
+                {detailProduct.sizeChartType !== 'none' && (
+                  <button className="merch-size-guide-btn" onClick={() => setSizeChartOpen(true)}>
+                    Size Guide
                   </button>
-                ))}
+                )}
               </div>
-              {!pickedSize && <p className="merch-size-hint">Select a size</p>}
+              {detailProduct.sizeChartType === 'none' ? (
+                <select
+                  className="merch-model-select"
+                  value={pickedSize}
+                  onChange={e => setPickedSize(e.target.value)}
+                >
+                  <option value="">Select model</option>
+                  {detailProduct.sizes.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              ) : (
+                <div className="merch-size-picker">
+                  {detailProduct.sizes.map((s) => (
+                    <button
+                      key={s}
+                      className={`merch-size-btn${pickedSize === s ? ' active' : ''}`}
+                      onClick={() => setPickedSize(s)}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!pickedSize && <p className="merch-size-hint">Select a {detailProduct.sizeLabel.toLowerCase()}</p>}
             </div>
 
             <div className="merch-detail-note">Ships within 5–7 business days across India.</div>
@@ -310,13 +328,17 @@ export default function MerchSection() {
       )}
 
       {/* Size chart modal */}
-      {sizeChartOpen && (
+      {sizeChartOpen && detailProduct && (
         <div className="merch-modal-overlay" onClick={() => setSizeChartOpen(false)}>
           <div className="merch-size-chart-modal" onClick={(e) => e.stopPropagation()}>
             <button className="merch-modal-close" onClick={() => setSizeChartOpen(false)} aria-label="Close">✕</button>
             <div className="merch-size-chart-title">Size Guide</div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/size-chart.png" alt="Size chart" className="merch-size-chart-img" />
+            <img
+              src={detailProduct.sizeChartType === 'women' ? '/size-chart-women.png' : '/size-chart-men.png'}
+              alt="Size chart"
+              className="merch-size-chart-img"
+            />
             <p className="merch-size-chart-note">All measurements in inches. When in doubt, size up.</p>
           </div>
         </div>
@@ -371,9 +393,10 @@ export default function MerchSection() {
                   placeholder="Full address with PIN code" rows={3} />
               </div>
               <div className="merch-form-field">
-                <label>Size</label>
+                <label>{selectedProduct.sizeLabel}</label>
                 <select required value={form.size}
                   onChange={(e) => setForm({ ...form, size: e.target.value })}>
+                  {selectedProduct.sizeChartType === 'none' && <option value="">Select model</option>}
                   {selectedProduct.sizes.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
