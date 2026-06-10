@@ -32,6 +32,23 @@ export async function GET(req: NextRequest) {
     sold[o.product_id][size] = (sold[o.product_id][size] || 0) + 1;
   });
 
+  // Seed missing rows with default stock of 10
+  const missing: { product_id: string; size: string; stock: number }[] = [];
+  for (const p of PRODUCTS) {
+    for (const s of p.sizes) {
+      if (inv[p.id]?.[s] === undefined) {
+        missing.push({ product_id: p.id, size: s, stock: 10 });
+      }
+    }
+  }
+  if (missing.length > 0) {
+    await supabase.from('inventory').upsert(missing, { onConflict: 'product_id,size', ignoreDuplicates: true });
+    missing.forEach(r => {
+      if (!inv[r.product_id]) inv[r.product_id] = {};
+      inv[r.product_id][r.size] = r.stock;
+    });
+  }
+
   const inventory = PRODUCTS.map(p => ({
     product: { id: p.id, name: p.name, subtitle: p.subtitle, tag: p.tag },
     sizes: p.sizes.map(s => ({
