@@ -1176,7 +1176,7 @@ export default function HomeClient() {
 
       {activeSection === 'irtiqa' && (
         <div className="visual-journeys-bar">
-          <a href="/blog/sui-bulbulah.html" className="vj-card" style={{backgroundImage:"url('/sui-bulbulah-cover.jpg')"}}>
+          <a href="/blog/sui-bulbulah.html" className="vj-card" style={{backgroundImage:"url('/sui-bulbulah-art.png')"}}>
             <div className="vj-card-overlay" />
             <div className="vj-card-content">
               <span className="vj-card-tag">Visual Journey</span>

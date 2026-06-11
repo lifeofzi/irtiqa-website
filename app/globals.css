@@ -181,7 +181,8 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 
 /* VISUAL JOURNEYS */
 .visual-journeys-bar{padding:0 0 0}
-.vj-card{display:block;width:100%;position:relative;overflow:hidden;text-decoration:none;color:var(--white);height:220px;background-size:cover;background-position:center;transition:transform .4s ease}
+.vj-card{display:block;width:100%;position:relative;overflow:hidden;text-decoration:none;color:var(--white);height:220px;background-size:cover;background-position:center 15%;transition:transform .4s ease}
+@media(max-width:600px){.vj-card{height:130px}}
 .vj-card:hover{transform:scale(1.012)}
 .vj-card-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,5,5,.82) 0%,rgba(120,0,0,.55) 60%,rgba(5,5,5,.75) 100%);transition:opacity .3s}
 .vj-card:hover .vj-card-overlay{opacity:.85}
