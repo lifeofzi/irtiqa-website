@@ -178,3 +178,15 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .video-card:hover .video-card-title{color:rgba(255,255,255,.8)}
 .video-card.active .video-card-title{color:var(--white)}
 .video-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)}
+
+/* VISUAL JOURNEYS */
+.visual-journeys-bar{padding:0 0 0}
+.vj-card{display:block;width:100%;position:relative;overflow:hidden;text-decoration:none;color:var(--white);height:220px;background-size:cover;background-position:center;transition:transform .4s ease}
+.vj-card:hover{transform:scale(1.012)}
+.vj-card-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(5,5,5,.82) 0%,rgba(120,0,0,.55) 60%,rgba(5,5,5,.75) 100%);transition:opacity .3s}
+.vj-card:hover .vj-card-overlay{opacity:.85}
+.vj-card-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:28px 32px;gap:8px}
+.vj-card-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--red);opacity:.8}
+.vj-card-title{font-size:clamp(18px,3vw,28px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;line-height:1.1}
+.vj-card-arrow{font-size:20px;color:var(--red);transition:transform .25s;line-height:1;margin-top:4px;display:inline-block}
+.vj-card:hover .vj-card-arrow{transform:translateX(6px)}

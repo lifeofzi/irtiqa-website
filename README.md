@@ -1,8 +1,27 @@
-# Welcome to Conductor
+# irtiqa-website
 
-This is the starter project for Conductor, a macOS app for running multiple coding agents in parallel in isolated git worktree workspaces.
+**This is a Next.js app.** The real website code lives in:
 
-The app is intentionally tiny: one dependency-free `index.html` file plus a few static assets in `public/`. There is no install step, build step, package manager, framework, or dev server.
+- `components/HomeClient.tsx` — the entire site UI (nav, sections, player, animations)
+- `app/globals.css` — all styles
+- `app/page.tsx` — Next.js entry point
+- `public/` — static assets (images, audio, video, blog HTML)
+- `public/blog/` — standalone visual journey pages (static HTML, served at `/blog/`)
+
+The `index.html` and `styles.css` in the root are **legacy static files — do not edit them.** They are not used by the deployed site.
+
+## Local Development
+
+```sh
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+## Deploy
+
+Deployed on Vercel. Push to `main` to deploy automatically.
 
 ## How Conductor Uses This Project
 
