@@ -321,6 +321,17 @@ export default function HomeClient() {
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
   }, [activeSection]);
 
+  function setMediaSession(trackIdx: number) {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: TRACKS[trackIdx].title,
+        artist: 'Ali Saffudin',
+        album: 'IRTIQA',
+        artwork: [{ src: '/cover.jpg', sizes: '512x512', type: 'image/jpeg' }],
+      });
+    }
+  }
+
   /* ── Track switching ── */
   function selectTrack(idx: number) {
     const isMobile = typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
@@ -339,6 +350,7 @@ export default function HomeClient() {
       setIsPausedByUser(false);
       cassetteVideoRef.current?.play();
       win?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      setMediaSession(idx);
     }
   }
 
@@ -346,9 +358,17 @@ export default function HomeClient() {
     const vid = cassetteVideoRef.current;
     const iframe = ytIframeRef.current;
     if (!vid) return;
+    const isMobile = typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
     if (isPausedByUser) {
       vid.play();
-      iframe?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      if (isMobile && iframe) {
+        // Reload iframe with autoplay=1 — src change from a user gesture is reliably
+        // allowed to autoplay on Android, unlike postMessage to a cross-origin iframe
+        iframe.src = `https://www.youtube.com/embed/${TRACKS[activeTrack].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`;
+      } else {
+        iframe?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }
+      setMediaSession(activeTrack);
       setIsPausedByUser(false);
     } else {
       vid.pause();
