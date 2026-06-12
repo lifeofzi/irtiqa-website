@@ -358,12 +358,13 @@ export default function HomeClient() {
     const vid = cassetteVideoRef.current;
     const iframe = ytIframeRef.current;
     if (!vid) return;
-    const isMobile = typeof window !== 'undefined' && navigator.maxTouchPoints > 0;
+    const isAndroid = typeof window !== 'undefined' && /Android/i.test(navigator.userAgent);
     if (isPausedByUser) {
       vid.play();
-      if (isMobile && iframe) {
+      if (isAndroid && iframe) {
         // Reload iframe with autoplay=1 — src change from a user gesture is reliably
-        // allowed to autoplay on Android, unlike postMessage to a cross-origin iframe
+        // allowed to autoplay on Android, unlike postMessage to a cross-origin iframe.
+        // iOS handles autoplay fine via postMessage so we keep that path for iOS.
         iframe.src = `https://www.youtube.com/embed/${TRACKS[activeTrack].vid}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&color=red`;
       } else {
         iframe?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
