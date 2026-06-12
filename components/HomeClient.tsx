@@ -1176,7 +1176,23 @@ export default function HomeClient() {
       )}
 
       <div className="wire-wrap"><canvas ref={wireBotRef} /></div>
-      <footer>Ali Saffudin &nbsp;·&nbsp; alisaffudin@gmail.com &nbsp;·&nbsp; 2026</footer>
+      <footer>
+        <div className="footer-social">
+          <a href="https://open.spotify.com/artist/0J3PUchbuLhyRD6RxFQrrE" target="_blank" rel="me noopener noreferrer" className="footer-social-link">Spotify</a>
+          <span className="footer-dot">·</span>
+          <a href="https://www.youtube.com/channel/UC9ezXxVBdZH7uFwE1Ua57rA" target="_blank" rel="me noopener noreferrer" className="footer-social-link">YouTube</a>
+          <span className="footer-dot">·</span>
+          <a href="https://music.apple.com/us/artist/ali-saffudin/1456350962" target="_blank" rel="me noopener noreferrer" className="footer-social-link">Apple Music</a>
+          <span className="footer-dot">·</span>
+          <a href="https://instagram.com/alisaffudin" target="_blank" rel="me noopener noreferrer" className="footer-social-link">Instagram</a>
+          <span className="footer-dot">·</span>
+          <a href="https://www.facebook.com/alisaffu" target="_blank" rel="me noopener noreferrer" className="footer-social-link">Facebook</a>
+        </div>
+        <div>
+          Ali Saffudin &nbsp;·&nbsp; alisaffudin@gmail.com &nbsp;·&nbsp; 2026
+          &nbsp;·&nbsp; <a href="/press" className="footer-social-link">Press &amp; Links</a>
+        </div>
+      </footer>
     </>
   );
 }
