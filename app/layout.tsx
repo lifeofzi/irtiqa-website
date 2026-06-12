@@ -2,7 +2,35 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'IRTIQA — Ali Saffudin',
+  title: 'Ali Saffudin — Kashmiri Singer-Songwriter | Irtiqa',
+  description:
+    'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir — blending Alternative Rock and Blues with Kashmiri Sufi poetry. Stream Irtiqa and Wolivo on Spotify, Apple Music, and YouTube.',
+  keywords: [
+    'Ali Saffudin',
+    'Kashmiri singer-songwriter',
+    'Kashmir music',
+    'Irtiqa',
+    'Wolivo',
+    'Kashmiri Sufi poetry',
+    'Alternative Rock',
+    'Blues',
+    'Azadi Records',
+    'Srinagar',
+    'Kashmiri music',
+  ],
+  openGraph: {
+    title: 'Ali Saffudin — Kashmiri Singer-Songwriter',
+    description:
+      'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir — blending Alternative Rock and Blues with Kashmiri Sufi poetry. Stream Irtiqa and Wolivo on Spotify, Apple Music, and YouTube.',
+    type: 'profile',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ali Saffudin — Kashmiri Singer-Songwriter',
+    description:
+      'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir. Stream Irtiqa and Wolivo on Spotify, Apple Music, and YouTube.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
