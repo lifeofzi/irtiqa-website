@@ -1188,7 +1188,10 @@ export default function HomeClient() {
           <span className="footer-dot">·</span>
           <a href="https://www.facebook.com/alisaffu" target="_blank" rel="me noopener noreferrer" className="footer-social-link">Facebook</a>
         </div>
-        <div>Ali Saffudin &nbsp;·&nbsp; alisaffudin@gmail.com &nbsp;·&nbsp; 2026</div>
+        <div>
+          Ali Saffudin &nbsp;·&nbsp; alisaffudin@gmail.com &nbsp;·&nbsp; 2026
+          &nbsp;·&nbsp; <a href="/press" className="footer-social-link">Press &amp; Links</a>
+        </div>
       </footer>
     </>
   );
