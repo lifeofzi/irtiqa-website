@@ -1175,6 +1175,19 @@ export default function HomeClient() {
         </section>
       )}
 
+      {activeSection === 'irtiqa' && (
+        <div className="visual-journeys-bar">
+          <a href="/blog/sui-bulbulah.html" className="vj-card" style={{backgroundImage:"url('/sui-bulbulah-art.png')"}}>
+            <div className="vj-card-overlay" />
+            <div className="vj-card-content">
+              <span className="vj-card-tag">Visual Journey</span>
+              <span className="vj-card-title">Sui Bulbulah Rach</span>
+              <span className="vj-card-arrow">→</span>
+            </div>
+          </a>
+        </div>
+      )}
+
       <div className="wire-wrap"><canvas ref={wireBotRef} /></div>
       <footer>
         <div className="footer-social">
