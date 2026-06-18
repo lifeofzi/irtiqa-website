@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Cashfree } from 'cashfree-pg';
+import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { createClient } from '@supabase/supabase-js';
 
-const CF = Cashfree as unknown as new (env: string, appId: string, secretKey: string) => unknown;
-const cf = new CF(
-  process.env.CASHFREE_ENV === 'production' ? 'production' : 'sandbox',
+const cf = new Cashfree(
+  process.env.CASHFREE_ENV === 'production' ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
   process.env.CASHFREE_APP_ID!,
   process.env.CASHFREE_SECRET_KEY!
 );
