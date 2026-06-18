@@ -6,20 +6,10 @@ import { PRODUCTS, type Product } from '../lib/products';
 
 declare global {
   interface Window {
-    Razorpay: new (options: RazorpayOptions) => { open(): void };
+    Cashfree?: (config: { mode: string }) => {
+      checkout: (options: { paymentSessionId: string }) => void;
+    };
   }
-}
-
-interface RazorpayOptions {
-  key: string | undefined;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id: string;
-  handler: (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => void;
-  prefill: { name: string; email: string; contact: string };
-  theme: { color: string };
 }
 
 interface BuyerForm {
@@ -30,7 +20,7 @@ interface BuyerForm {
   size: string;
 }
 
-type ModalState = 'form' | 'processing' | 'verifying';
+type ModalState = 'form' | 'processing';
 
 interface OrderSuccess {
   email: string;
@@ -94,6 +84,7 @@ export default function MerchSection() {
   const [form, setForm] = useState<BuyerForm>({ name: '', email: '', phone: '', address: '', size: '' });
   const [error, setError] = useState('');
   const [orderSuccess, setOrderSuccess] = useState<OrderSuccess | null>(null);
+  const [verifying, setVerifying] = useState(false);
 
   // Sync state when browser back/forward changes ?p=
   useEffect(() => {
@@ -108,6 +99,49 @@ export default function MerchSection() {
         .catch(() => {});
     }
   }, [searchParams]);
+
+  // Handle post-Cashfree-redirect verification
+  useEffect(() => {
+    const cfOrderId = searchParams.get('cf_order_id');
+    if (!cfOrderId) return;
+
+    const raw = sessionStorage.getItem('cf_pending_order');
+    if (!raw) return;
+
+    let pending: Record<string, string>;
+    try { pending = JSON.parse(raw); } catch { return; }
+
+    sessionStorage.removeItem('cf_pending_order');
+    // Strip cf_order_id from URL without reload
+    const url = new URL(window.location.href);
+    url.searchParams.delete('cf_order_id');
+    window.history.replaceState({}, '', url.toString());
+
+    setVerifying(true);
+    fetch('/api/cashfree/verify-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId: cfOrderId, ...pending }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        setVerifying(false);
+        if (d.success) {
+          setOrderSuccess({
+            email: pending.buyerEmail,
+            productName: pending.productName,
+            orderId: cfOrderId,
+          });
+        } else {
+          setError(d.error || 'Payment verification failed. Contact alisaffudin@gmail.com.');
+        }
+      })
+      .catch(() => {
+        setVerifying(false);
+        setError('Payment verification failed. Contact alisaffudin@gmail.com.');
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function openDetail(product: Product) {
     setActiveImageIdx(0);
@@ -134,13 +168,13 @@ export default function MerchSection() {
     setError('');
   }
 
-  function loadRazorpayScript(): Promise<void> {
+  function loadCashfreeScript(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (window.Razorpay) { resolve(); return; }
+      if (window.Cashfree) { resolve(); return; }
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Razorpay'));
+      script.onerror = () => reject(new Error('Failed to load Cashfree'));
       document.head.appendChild(script);
     });
   }
@@ -152,7 +186,8 @@ export default function MerchSection() {
     setModalState('processing');
 
     try {
-      const res = await fetch('/api/razorpay/create-order', {
+      const returnUrl = `${window.location.origin}/?s=merch`;
+      const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -163,57 +198,31 @@ export default function MerchSection() {
           buyerPhone: form.phone,
           buyerAddress: form.address,
           size: form.size || undefined,
+          returnUrl,
         }),
       });
 
       const data = await res.json();
-      if (!res.ok || !data.orderId) throw new Error(data.error || 'Failed to create order');
+      if (!res.ok || !data.paymentSessionId) throw new Error(data.error || 'Failed to create order');
 
-      await loadRazorpayScript();
+      // Save buyer details for post-redirect verification
+      sessionStorage.setItem('cf_pending_order', JSON.stringify({
+        productId: selectedProduct.id,
+        productName: `${selectedProduct.name} — ${selectedProduct.subtitle}`,
+        amount: selectedProduct.price,
+        buyerName: form.name,
+        buyerEmail: form.email,
+        buyerPhone: form.phone,
+        buyerAddress: form.address,
+        size: form.size || undefined,
+      }));
 
-      const options: RazorpayOptions = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: data.amount,
-        currency: 'INR',
-        name: 'Ali Saffudin — IRTIQA',
-        description: `${selectedProduct.name} (${selectedProduct.subtitle})`,
-        order_id: data.orderId,
-        handler: async (response) => {
-          setModalState('verifying');
-          try {
-            const verifyRes = await fetch('/api/razorpay/verify-payment', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-                productId: selectedProduct.id,
-                productName: `${selectedProduct.name} — ${selectedProduct.subtitle}`,
-                amount: selectedProduct.price,
-                buyerName: form.name,
-                buyerEmail: form.email,
-                buyerPhone: form.phone,
-                buyerAddress: form.address,
-                size: form.size || undefined,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-            if (!verifyRes.ok || !verifyData.success) throw new Error(verifyData.error || 'Verification failed');
-            setSelectedProduct(null);
-            setOrderSuccess({ email: form.email, productName: selectedProduct.name, orderId: response.razorpay_order_id });
-          } catch {
-            setError('Payment verification failed. Please contact alisaffudin@gmail.com.');
-            setModalState('form');
-          }
-        },
-        prefill: { name: form.name, email: form.email, contact: form.phone },
-        theme: { color: '#c00000' },
-      };
+      await loadCashfreeScript();
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-      // modal stays hidden while Razorpay widget is open
+      if (!window.Cashfree) throw new Error('Failed to load Cashfree SDK');
+      const cfMode = process.env.NODE_ENV === 'production' ? 'production' : 'sandbox';
+      const cashfree = window.Cashfree({ mode: cfMode });
+      cashfree.checkout({ paymentSessionId: data.paymentSessionId });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setModalState('form');
@@ -359,8 +368,8 @@ export default function MerchSection() {
         </div>
       )}
 
-      {/* Verifying spinner overlay — shown after Razorpay closes, before confirm */}
-      {selectedProduct && modalState === 'verifying' && (
+      {/* Verifying spinner overlay — shown after redirect back from Cashfree */}
+      {verifying && (
         <div className="merch-modal-overlay">
           <div className="merch-spinner-box">
             <div className="merch-spinner" />
@@ -370,7 +379,7 @@ export default function MerchSection() {
       )}
 
       {/* Checkout modal */}
-      {selectedProduct && modalState !== 'verifying' && (
+      {selectedProduct && (
         <div className="merch-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}>
           <div className="merch-modal" role="dialog" aria-modal="true" aria-label={`Buy ${selectedProduct.name}`}>
             {modalState === 'form' && (
@@ -421,7 +430,7 @@ export default function MerchSection() {
               <button type="submit" className="merch-buy-btn merch-submit-btn"
                 disabled={modalState === 'processing'}>
                 {modalState === 'processing'
-                  ? <span className="merch-btn-spinner"><span className="merch-spinner-inline" /> Opening payment...</span>
+                  ? <span className="merch-btn-spinner"><span className="merch-spinner-inline" /> Redirecting to payment...</span>
                   : `Pay ₹${selectedProduct.price}`}
               </button>
             </form>
