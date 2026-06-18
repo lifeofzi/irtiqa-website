@@ -64,15 +64,23 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { productId, size, stock } = await req.json();
-  if (!productId || !size || stock == null) {
-    return NextResponse.json({ error: 'productId, size, stock required' }, { status: 400 });
+  try {
+    const { productId, size, stock } = await req.json();
+    if (!productId || !size || stock == null) {
+      return NextResponse.json({ error: 'productId, size, stock required' }, { status: 400 });
+    }
+
+    const { error } = await db()
+      .from('inventory')
+      .upsert({ product_id: productId, size, stock }, { onConflict: 'product_id,size' });
+
+    if (error) {
+      console.error('Inventory upsert error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('Inventory PUT error:', err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
-
-  const { error } = await db()
-    .from('inventory')
-    .upsert({ product_id: productId, size, stock }, { onConflict: 'product_id,size' });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
 }
