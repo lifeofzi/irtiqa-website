@@ -229,8 +229,33 @@ export default function MerchSection() {
     }
   }
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'IRTIQA Merch — Ali Saffudin',
+    url: 'https://alisaffudin.com/?s=merch',
+    itemListElement: PRODUCTS.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: `${p.name} — ${p.subtitle}`,
+        description: p.description,
+        brand: { '@type': 'Brand', name: 'Ali Saffudin' },
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'INR',
+          price: p.price,
+          availability: 'https://schema.org/InStock',
+          url: `https://alisaffudin.com/?s=merch&p=${p.id}`,
+        },
+      },
+    })),
+  };
+
   return (
     <section className="merch-section">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
       {!orderSuccess && (
         <div className="merch-header">
           <span className="music-tag">Limited Edition</span>
@@ -343,7 +368,7 @@ export default function MerchSection() {
               {!pickedSize && <p className="merch-size-hint">Select a {detailProduct.sizeLabel.toLowerCase()}</p>}
             </div>
 
-            <div className="merch-detail-note">Ships within 5–7 business days across India.</div>
+            <div className="merch-detail-note">Ships within 5–7 business days across India. Returns accepted within 7 days of delivery — email alisaffudin@gmail.com.</div>
             <button className="merch-buy-btn merch-detail-buy" onClick={() => openCheckout(detailProduct)}>
               Buy — ₹{detailProduct.price}
             </button>

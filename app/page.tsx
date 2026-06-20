@@ -58,7 +58,7 @@ export async function generateMetadata(
 
 export default function Page() {
   return (
-    <Suspense>
+    <Suspense fallback={<div />}>
       <HomeClient />
     </Suspense>
   );
