@@ -918,11 +918,11 @@ export default function HomeClient() {
         <canvas className="hero-resist" ref={heroCanvasRef} />
         <div className="hero-content">
           <div className="title-row">
-            <span className="title-en">
+            <h1 className="title-en">
               {meta.titleEn}
               <span className="g-a" aria-hidden="true">{meta.titleEn}</span>
               <span className="g-b" aria-hidden="true">{meta.titleEn}</span>
-            </span>
+            </h1>
             {meta.titleAr && <span className="title-ar">{meta.titleAr}</span>}
           </div>
           <div className="hairline" />
@@ -964,7 +964,7 @@ export default function HomeClient() {
         <section className="music">
           <div className="music-header">
             <span className="music-tag">Full Album</span>
-            <span className="music-title">IRTIQA</span>
+            <h2 className="music-title">IRTIQA</h2>
             <span className="music-ep">EP · 2026 · 4 Tracks</span>
           </div>
           <div className="player-grid">
@@ -1031,7 +1031,7 @@ export default function HomeClient() {
         <section className="music">
           <div className="music-header">
             <span className="music-tag">Album</span>
-            <span className="music-title">WOLIVO</span>
+            <h2 className="music-title">WOLIVO</h2>
             <span className="music-ep">2022 · 10 Tracks</span>
           </div>
           <div className="player-grid">
@@ -1083,7 +1083,7 @@ export default function HomeClient() {
             </div>
             <div className="about-text-col">
               <div className="about-tag">Singer · Songwriter · Kashmir</div>
-              <h2 className="about-name">Ali Saffudin</h2>
+              <h1 className="about-name">Ali Saffudin</h1>
               <div className="about-hairline" />
               <p className="about-para">
                 Ali Saffudin is a singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir.
@@ -1120,7 +1120,7 @@ export default function HomeClient() {
         <section className="videos-section">
           <div className="videos-header">
             <span className="music-tag">YouTube</span>
-            <span className="music-title">All Videos</span>
+            <h1 className="music-title">All Videos</h1>
             <span className="music-ep">{ALL_VIDEOS.length} videos</span>
           </div>
           <div className="video-player-wrap">

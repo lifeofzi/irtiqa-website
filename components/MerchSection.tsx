@@ -234,7 +234,7 @@ export default function MerchSection() {
       {!orderSuccess && (
         <div className="merch-header">
           <span className="music-tag">Limited Edition</span>
-          <span className="music-title">MERCH</span>
+          <h1 className="music-title">MERCH</h1>
           {!detailProduct && <span className="music-ep">{PRODUCTS.length} Items</span>}
           {detailProduct && (
             <button className="merch-back-btn" onClick={closeDetail}>← Back</button>
