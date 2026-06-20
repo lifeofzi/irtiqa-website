@@ -170,7 +170,7 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 /* TOP NAV */
 .top-nav{position:fixed;top:0;left:0;right:0;z-index:10000;display:flex;align-items:stretch;justify-content:space-between;background:rgba(5,5,5,.88);backdrop-filter:blur(10px);border-bottom:1px solid rgba(192,0,0,.22)}
 .top-tabs{display:flex;align-items:stretch}
-.top-tab{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.45em;text-transform:uppercase;padding:16px 28px;cursor:pointer;color:rgba(255,255,255,.32);border:none;border-bottom:2px solid transparent;background:none;transition:color .2s,border-color .2s;flex-shrink:0}
+.top-tab{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.45em;text-transform:uppercase;padding:16px 28px;cursor:pointer;color:rgba(255,255,255,.32);border:none;border-bottom:2px solid transparent;background:none;transition:color .2s,border-color .2s;flex-shrink:0;text-decoration:none;display:flex;align-items:center}
 .top-tab:hover{color:rgba(255,255,255,.65)}
 .top-tab.active{color:var(--white);border-bottom-color:var(--red)}
 .top-stream-icons{display:flex;align-items:center;gap:4px;padding:0 16px;border-left:1px solid rgba(192,0,0,.18)}
