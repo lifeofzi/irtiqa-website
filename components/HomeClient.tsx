@@ -1179,6 +1179,8 @@ export default function HomeClient() {
         <a href="mailto:alisaffudin@gmail.com" className="footer-link">alisaffudin@gmail.com</a>
         <span className="footer-sep">&nbsp;·&nbsp;</span>
         <span>2026</span>
+        <span className="footer-sep">&nbsp;·&nbsp;</span>
+        <a href="https://zamanishtiyaq.work/" target="_blank" rel="noopener noreferrer" className="footer-link" style={{opacity: 0.5}}>Site by Zaman</a>
       </footer>
     </>
   );
