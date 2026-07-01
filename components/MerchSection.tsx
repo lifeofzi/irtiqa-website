@@ -230,7 +230,7 @@ export default function MerchSection() {
       await loadCashfreeScript();
 
       if (!window.Cashfree) throw new Error('Failed to load Cashfree SDK');
-      const cfMode = process.env.NODE_ENV === 'production' ? 'production' : 'sandbox';
+      const cfMode = (process.env.NEXT_PUBLIC_CASHFREE_ENV ?? 'sandbox') as 'production' | 'sandbox';
       const cashfree = window.Cashfree({ mode: cfMode });
       cashfree.checkout({ paymentSessionId: data.paymentSessionId });
     } catch (err) {
