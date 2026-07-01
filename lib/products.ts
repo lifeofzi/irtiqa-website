@@ -42,7 +42,7 @@ export const PRODUCTS: Product[] = [
     id: 'irtiqa-phone-cover',
     name: 'IRTIQA Phone Cover',
     subtitle: 'Glass Phone Case',
-    price: 299,
+    price: 399,
     description: 'Limited edition glass case. IRTIQA in red on black. Slim profile, full camera cutout protection. Select your model at checkout.',
     tag: 'Accessories',
     sizes: [
