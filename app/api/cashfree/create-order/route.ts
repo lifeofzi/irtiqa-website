@@ -46,7 +46,9 @@ export async function POST(req: NextRequest) {
     if (!cfRes.ok) {
       const errText = await cfRes.text();
       console.error('Cashfree create order failed:', cfRes.status, errText);
-      return NextResponse.json({ error: 'Failed to create Cashfree order' }, { status: 502 });
+      let cfErr: unknown;
+      try { cfErr = JSON.parse(errText); } catch { cfErr = errText; }
+      return NextResponse.json({ error: 'Failed to create Cashfree order', detail: cfErr, status: cfRes.status }, { status: 502 });
     }
 
     const cfOrder = await cfRes.json();

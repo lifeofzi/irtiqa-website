@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { sql } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,33 +14,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const db = sql();
+    const rows = await db`
+      SELECT buyer_email, buyer_name, product_name FROM orders WHERE razorpay_order_id = ${orderId}
+    `;
 
-    const { data: order, error: fetchError } = await supabase
-      .from('orders')
-      .select('buyer_email, buyer_name, product_name')
-      .eq('razorpay_order_id', orderId)
-      .single();
-
-    if (fetchError || !order) {
+    if (!rows.length) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({ tracking_id: trackingId, status: 'shipped' })
-      .eq('razorpay_order_id', orderId);
+    await db`
+      UPDATE orders SET tracking_id = ${trackingId}, status = 'shipped' WHERE razorpay_order_id = ${orderId}
+    `;
 
-    if (updateError) {
-      console.error('Supabase update error:', updateError);
-      return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
-    }
-
+    const order = rows[0];
     const resend = new Resend(process.env.RESEND_API_KEY!);
-
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: order.buyer_email,

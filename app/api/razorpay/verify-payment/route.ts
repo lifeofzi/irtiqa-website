@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { sql } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,32 +28,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid payment signature' }, { status: 400 });
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    const { error: dbError } = await supabase.from('orders').insert({
-      razorpay_order_id: razorpayOrderId,
-      razorpay_payment_id: razorpayPaymentId,
-      product_id: productId,
-      product_name: productName,
-      product_price: amount,
-      size: size || null,
-      buyer_name: buyerName,
-      buyer_email: buyerEmail,
-      buyer_phone: buyerPhone || null,
-      buyer_address: buyerAddress,
-      status: 'paid',
-    });
-
-    if (dbError) {
-      console.error('Supabase insert error:', dbError);
+    const db = sql();
+    try {
+      await db`
+        INSERT INTO orders (
+          razorpay_order_id, razorpay_payment_id, product_id, product_name,
+          product_price, size, buyer_name, buyer_email, buyer_phone, buyer_address, status
+        ) VALUES (
+          ${razorpayOrderId}, ${razorpayPaymentId}, ${productId}, ${productName},
+          ${amount}, ${size || null}, ${buyerName}, ${buyerEmail},
+          ${buyerPhone || null}, ${buyerAddress}, 'paid'
+        )
+      `;
+    } catch (err: any) {
+      if (err.code === '23505') {
+        return NextResponse.json({ success: true, orderId: razorpayOrderId });
+      }
+      console.error('DB insert error:', err);
       return NextResponse.json({ error: 'Failed to save order' }, { status: 500 });
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
-
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: buyerEmail,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
-import { createClient } from '@supabase/supabase-js';
+import { sql } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,37 +10,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const db = sql();
+    const sizeKey = size || '__none__';
 
-    // Get stock limit from inventory table, fall back to 10 only if row doesn't exist
-    const { data: invRow } = await supabase
-      .from('inventory')
-      .select('stock')
-      .eq('product_id', productId)
-      .eq('size', size || '__none__')
-      .maybeSingle();
-    const stockLimit = invRow != null ? invRow.stock : 10;
+    const [invRows, countRows] = await Promise.all([
+      db`SELECT stock FROM inventory WHERE product_id = ${productId} AND size = ${sizeKey}`,
+      size
+        ? db`SELECT COUNT(*)::int AS count FROM orders WHERE product_id = ${productId} AND size = ${size} AND status IN ('paid', 'shipped', 'delivered')`
+        : db`SELECT COUNT(*)::int AS count FROM orders WHERE product_id = ${productId} AND status IN ('paid', 'shipped', 'delivered')`,
+    ]);
 
-    // Stock set to 0 — block immediately
+    const stockLimit = invRows.length > 0 ? invRows[0].stock : 10;
+
     if (stockLimit === 0) {
       return NextResponse.json({ error: `Size ${size || 'selected'} is out of stock.` }, { status: 409 });
     }
 
-    // Count paid/shipped/delivered orders for this product+size
-    let countQuery = supabase
-      .from('orders')
-      .select('*', { count: 'exact', head: true })
-      .eq('product_id', productId)
-      .in('status', ['paid', 'shipped', 'delivered']);
-
-    if (size) countQuery = countQuery.eq('size', size);
-
-    const { count } = await countQuery;
-
-    if ((count ?? 0) >= stockLimit) {
+    if ((countRows[0]?.count ?? 0) >= stockLimit) {
       return NextResponse.json({ error: `Size ${size || 'selected'} is out of stock.` }, { status: 409 });
     }
 
