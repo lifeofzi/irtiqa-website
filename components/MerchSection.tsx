@@ -17,6 +17,9 @@ interface BuyerForm {
   email: string;
   phone: string;
   address: string;
+  city: string;
+  state: string;
+  pincode: string;
   size: string;
 }
 
@@ -78,10 +81,9 @@ export default function MerchSection() {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [pickedSize, setPickedSize] = useState('');
   const [sizeChartOpen, setSizeChartOpen] = useState(false);
-  const [outOfStock, setOutOfStock] = useState<Record<string, boolean>>({});
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalState, setModalState] = useState<ModalState>('form');
-  const [form, setForm] = useState<BuyerForm>({ name: '', email: '', phone: '', address: '', size: '' });
+  const [form, setForm] = useState<BuyerForm>({ name: '', email: '', phone: '', address: '', city: '', state: '', pincode: '', size: '' });
   const [error, setError] = useState('');
   const [orderSuccess, setOrderSuccess] = useState<OrderSuccess | null>(null);
   const [verifying, setVerifying] = useState(false);
@@ -89,15 +91,7 @@ export default function MerchSection() {
   // Sync state when browser back/forward changes ?p=
   useEffect(() => {
     const p = searchParams.get('p');
-    const product = PRODUCTS.find(prod => prod.id === p) ?? null;
-    setDetailProduct(product);
-    if (product) {
-      setOutOfStock({});
-      fetch(`/api/stock?productId=${product.id}`)
-        .then(r => r.json())
-        .then(d => setOutOfStock(d.outOfStock || {}))
-        .catch(() => {});
-    }
+    setDetailProduct(PRODUCTS.find(prod => prod.id === p) ?? null);
   }, [searchParams]);
 
   // Handle post-Cashfree-redirect verification
@@ -158,7 +152,7 @@ export default function MerchSection() {
 
   function openCheckout(product: Product) {
     setSelectedProduct(product);
-    setForm({ name: '', email: '', phone: '', address: '', size: pickedSize || product.sizes[0] || '' });
+    setForm({ name: '', email: '', phone: '', address: '', city: '', state: '', pincode: '', size: pickedSize || product.sizes[0] || '' });
     setModalState('form');
     setError('');
   }
@@ -197,6 +191,9 @@ export default function MerchSection() {
           buyerEmail: form.email,
           buyerPhone: form.phone,
           buyerAddress: form.address,
+          buyerCity: form.city,
+          buyerState: form.state,
+          buyerPincode: form.pincode,
           size: form.size || undefined,
           returnUrl,
         }),
@@ -214,6 +211,9 @@ export default function MerchSection() {
         buyerEmail: form.email,
         buyerPhone: form.phone,
         buyerAddress: form.address,
+        buyerCity: form.city,
+        buyerState: form.state,
+        buyerPincode: form.pincode,
         size: form.size || undefined,
       }));
 
@@ -348,21 +348,15 @@ export default function MerchSection() {
                 </select>
               ) : (
                 <div className="merch-size-picker">
-                  {detailProduct.sizes.map((s) => {
-                    const oos = outOfStock[s];
-                    return (
-                      <button
-                        key={s}
-                        className={`merch-size-btn${pickedSize === s ? ' active' : ''}${oos ? ' sold-out' : ''}`}
-                        onClick={() => !oos && setPickedSize(s)}
-                        disabled={oos}
-                        title={oos ? 'Sold out' : undefined}
-                      >
-                        {s}
-                        {oos && <span className="merch-size-oos-line" />}
-                      </button>
-                    );
-                  })}
+                  {detailProduct.sizes.map((s) => (
+                    <button
+                      key={s}
+                      className={`merch-size-btn${pickedSize === s ? ' active' : ''}`}
+                      onClick={() => setPickedSize(s)}
+                    >
+                      {s}
+                    </button>
+                  ))}
                 </div>
               )}
               {!pickedSize && <p className="merch-size-hint">Select a {detailProduct.sizeLabel.toLowerCase()}</p>}
@@ -436,10 +430,30 @@ export default function MerchSection() {
                   placeholder="+91 XXXXX XXXXX" />
               </div>
               <div className="merch-form-field">
-                <label>Delivery Address</label>
+                <label>Street Address</label>
                 <textarea required value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
-                  placeholder="Full address with PIN code" rows={3} />
+                  placeholder="House no, street, area, landmark" rows={2} />
+              </div>
+              <div className="merch-form-row">
+                <div className="merch-form-field">
+                  <label>City</label>
+                  <input type="text" required value={form.city}
+                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    placeholder="City" />
+                </div>
+                <div className="merch-form-field">
+                  <label>PIN Code</label>
+                  <input type="text" required value={form.pincode}
+                    onChange={(e) => setForm({ ...form, pincode: e.target.value })}
+                    placeholder="6-digit PIN" pattern="[0-9]{6}" />
+                </div>
+              </div>
+              <div className="merch-form-field">
+                <label>State</label>
+                <input type="text" required value={form.state}
+                  onChange={(e) => setForm({ ...form, state: e.target.value })}
+                  placeholder="State" />
               </div>
               <div className="merch-form-field">
                 <label>{selectedProduct.sizeLabel}</label>

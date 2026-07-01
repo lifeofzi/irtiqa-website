@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
 const CF_API_BASE = process.env.CASHFREE_ENV === 'production'
   ? 'https://api.cashfree.com/pg'
@@ -7,39 +6,10 @@ const CF_API_BASE = process.env.CASHFREE_ENV === 'production'
 
 export async function POST(req: NextRequest) {
   try {
-    const { productId, amount, buyerName, buyerEmail, buyerPhone, buyerAddress, size, returnUrl } = await req.json();
+    const { productId, amount, buyerName, buyerEmail, buyerPhone, buyerAddress, buyerCity, buyerState, buyerPincode, size, returnUrl } = await req.json();
 
-    if (!productId || !amount || !buyerName || !buyerEmail || !buyerAddress) {
+    if (!productId || !amount || !buyerName || !buyerEmail || !buyerAddress || !buyerCity || !buyerState || !buyerPincode) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
-
-    // Stock check
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    const { data: invRow } = await supabase
-      .from('inventory')
-      .select('stock')
-      .eq('product_id', productId)
-      .eq('size', size || '__none__')
-      .maybeSingle();
-    const stockLimit = invRow != null ? invRow.stock : 10;
-
-    if (stockLimit === 0) {
-      return NextResponse.json({ error: `Size ${size || 'selected'} is out of stock.` }, { status: 409 });
-    }
-
-    let countQuery = supabase
-      .from('orders')
-      .select('*', { count: 'exact', head: true })
-      .eq('product_id', productId)
-      .in('status', ['paid', 'shipped', 'delivered']);
-    if (size) countQuery = countQuery.eq('size', size);
-    const { count } = await countQuery;
-    if ((count ?? 0) >= stockLimit) {
-      return NextResponse.json({ error: `Size ${size || 'selected'} is out of stock.` }, { status: 409 });
     }
 
     const orderId = `irtiqa_${productId.slice(-4)}_${Date.now()}`;

@@ -296,6 +296,7 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .merch-modal-product{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(192,0,0,.2)}
 .merch-modal-name{font-family:'Oswald',Impact,sans-serif;font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--white);margin:6px 0 4px}
 .merch-form{display:flex;flex-direction:column;gap:16px}
+.merch-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .merch-form-field{display:flex;flex-direction:column;gap:6px}
 .merch-form-field label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--red);opacity:.7}
 .merch-form-field input,.merch-form-field textarea,.merch-form-field select{background:rgba(255,255,255,.05);border:1px solid rgba(192,0,0,.3);color:var(--white);padding:10px 12px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.03em;width:100%;resize:vertical;outline:none;transition:border-color .2s}

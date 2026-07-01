@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { PRODUCTS } from '@/lib/products';
+import { createPrintroveOrder } from '@/lib/printrove';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,10 +15,13 @@ export async function POST(req: NextRequest) {
       buyerEmail,
       buyerPhone,
       buyerAddress,
+      buyerCity,
+      buyerState,
+      buyerPincode,
       size,
     } = await req.json();
 
-    if (!orderId || !productId || !buyerEmail || !buyerName || !buyerAddress) {
+    if (!orderId || !productId || !buyerEmail || !buyerName || !buyerAddress || !buyerCity || !buyerState || !buyerPincode) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -67,17 +72,49 @@ export async function POST(req: NextRequest) {
       buyer_name: buyerName,
       buyer_email: buyerEmail,
       buyer_phone: buyerPhone || null,
-      buyer_address: buyerAddress,
+      buyer_address: `${buyerAddress}, ${buyerCity}, ${buyerState} - ${buyerPincode}`,
       status: 'paid',
     });
 
     if (dbError) {
-      // If duplicate (user hit back and re-verified), treat as success
       if (dbError.code === '23505') {
         return NextResponse.json({ success: true, orderId });
       }
       console.error('Supabase insert error:', dbError);
       return NextResponse.json({ error: 'Failed to save order' }, { status: 500 });
+    }
+
+    // Forward to Printrove for fulfillment (fire-and-forget — failure doesn't block customer confirmation)
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (product && size) {
+      const variantId = product.printroveVariantIds[size];
+      if (variantId) {
+        createPrintroveOrder({
+          referenceNumber: orderId,
+          retailPrice: amount,
+          customer: {
+            name: buyerName,
+            email: buyerEmail,
+            phone: buyerPhone || '',
+            address1: buyerAddress,
+            city: buyerCity,
+            state: buyerState,
+            pincode: buyerPincode,
+          },
+          printroveProductId: product.printroveProductId,
+          variantId,
+        }).then(result => {
+          if (!result.success) {
+            console.error(`Printrove order failed for ${orderId}:`, result.error);
+          } else {
+            console.log(`Printrove order created for ${orderId}: #${result.printroveOrderId}`);
+          }
+        }).catch(err => {
+          console.error(`Printrove order error for ${orderId}:`, err);
+        });
+      } else {
+        console.error(`No Printrove variant found for product=${productId} size=${size}`);
+      }
     }
 
     // Send confirmation email
@@ -99,8 +136,9 @@ export async function POST(req: NextRequest) {
             <p style="color: #c00000; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; margin: 0 0 4px;">Order ID</p>
             <p style="color: #f0f0f0; font-size: 15px; font-weight: bold; margin: 0 0 16px; letter-spacing: 0.05em;">${orderId}</p>
             <p style="color: #f0f0f0; margin: 4px 0;">Product: ${productName}</p>
-            ${size ? `<p style="color: #f0f0f0; margin: 4px 0;">Size: ${size}</p>` : ''}
+            ${size ? `<p style="color: #f0f0f0; margin: 4px 0;">Size / Model: ${size}</p>` : ''}
             <p style="color: #f0f0f0; margin: 4px 0;">Amount: ₹${amount}</p>
+            <p style="color: #f0f0f0; margin: 4px 0;">Shipping to: ${buyerAddress}, ${buyerCity}, ${buyerState} - ${buyerPincode}</p>
           </div>
           <p style="color: rgba(255,255,255,0.6); font-size: 13px;">We'll send you a tracking ID once your order ships.</p>
           <hr style="border: none; border-top: 1px solid rgba(192,0,0,0.2); margin: 24px 0;" />
