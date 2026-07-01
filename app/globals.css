@@ -234,15 +234,16 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .merch-card:hover .merch-card-cta{opacity:1}
 
 /* Detail page */
-.merch-detail{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 180px);border-bottom:1px solid rgba(192,0,0,.15)}
-@media(max-width:760px){.merch-detail{grid-template-columns:1fr}}
-.merch-detail-left{border-right:1px solid rgba(192,0,0,.15);padding:40px}
-@media(max-width:760px){.merch-detail-left{border-right:none;border-bottom:1px solid rgba(192,0,0,.15);padding:24px}}
+.merch-detail{display:grid;grid-template-columns:minmax(0,460px) 1fr;min-height:calc(100vh - 180px);border-bottom:1px solid rgba(192,0,0,.15)}
+@media(max-width:960px){.merch-detail{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.merch-detail{grid-template-columns:1fr}}
+.merch-detail-left{border-right:1px solid rgba(192,0,0,.15);padding:32px}
+@media(max-width:680px){.merch-detail-left{border-right:none;border-bottom:1px solid rgba(192,0,0,.15);padding:20px}}
 
 /* Image gallery */
-.merch-gallery{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
-.merch-gallery-main{width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#0d0000 0%,#1a0000 50%,#080000 100%);border:1px solid rgba(192,0,0,.15);overflow:hidden;position:relative;z-index:10000}
-.merch-gallery-img{width:100%;height:100%;object-fit:cover;display:block}
+.merch-gallery{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px;z-index:10000}
+.merch-gallery-main{width:100%;max-height:calc(100vh - 200px);aspect-ratio:1/1;background:#080000;border:1px solid rgba(192,0,0,.15);overflow:hidden;position:relative}
+.merch-gallery-img{width:100%;height:100%;object-fit:contain;display:block}
 .merch-gallery-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px}
 .merch-gallery-placeholder-text{font-family:'Oswald',Impact,sans-serif;font-size:clamp(22px,4vw,40px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(192,0,0,.28);text-align:center;line-height:1.2}
 .merch-gallery-placeholder-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:rgba(192,0,0,.2)}
