@@ -1,38 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { PRODUCTS } from '@/lib/products';
 import { isAdminRequest } from '@/lib/admin-auth';
-
-function db() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+import { sql } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const supabase = db();
-  const [{ data: rows }, { data: orders }] = await Promise.all([
-    supabase.from('inventory').select('product_id, size, stock'),
-    supabase.from('orders').select('product_id, size').in('status', ['paid', 'shipped', 'delivered']),
+  const db = sql();
+  const [rows, orders] = await Promise.all([
+    db`SELECT product_id, size, stock FROM inventory`,
+    db`SELECT product_id, size FROM orders WHERE status IN ('paid', 'shipped', 'delivered')`,
   ]);
 
   const inv: Record<string, Record<string, number>> = {};
-  rows?.forEach(r => {
+  rows.forEach(r => {
     if (!inv[r.product_id]) inv[r.product_id] = {};
     inv[r.product_id][r.size] = r.stock;
   });
 
   const sold: Record<string, Record<string, number>> = {};
-  orders?.forEach(o => {
+  orders.forEach(o => {
     const size = o.size || '__none__';
     if (!sold[o.product_id]) sold[o.product_id] = {};
     sold[o.product_id][size] = (sold[o.product_id][size] || 0) + 1;
   });
 
-  // Seed missing rows with default stock of 10
   const missing: { product_id: string; size: string; stock: number }[] = [];
   for (const p of PRODUCTS) {
     for (const s of p.sizes) {
@@ -42,7 +34,11 @@ export async function GET(req: NextRequest) {
     }
   }
   if (missing.length > 0) {
-    await supabase.from('inventory').upsert(missing, { onConflict: 'product_id,size', ignoreDuplicates: true });
+    await Promise.all(
+      missing.map(r =>
+        db`INSERT INTO inventory (product_id, size, stock) VALUES (${r.product_id}, ${r.size}, ${r.stock}) ON CONFLICT (product_id, size) DO NOTHING`
+      )
+    );
     missing.forEach(r => {
       if (!inv[r.product_id]) inv[r.product_id] = {};
       inv[r.product_id][r.size] = r.stock;
@@ -70,14 +66,13 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'productId, size, stock required' }, { status: 400 });
     }
 
-    const { error } = await db()
-      .from('inventory')
-      .upsert({ product_id: productId, size, stock }, { onConflict: 'product_id,size' });
+    const db = sql();
+    await db`
+      INSERT INTO inventory (product_id, size, stock)
+      VALUES (${productId}, ${size}, ${stock})
+      ON CONFLICT (product_id, size) DO UPDATE SET stock = ${stock}
+    `;
 
-    if (error) {
-      console.error('Inventory upsert error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('Inventory PUT error:', err);

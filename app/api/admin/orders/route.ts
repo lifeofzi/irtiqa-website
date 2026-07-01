@@ -1,33 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { isAdminRequest } from '@/lib/admin-auth';
-
-function db() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+import { sql } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   if (!isAdminRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const status = req.nextUrl.searchParams.get('status');
-  const supabase = db();
+  const db = sql();
 
-  const [filteredResult, allResult] = await Promise.all([
-    (() => {
-      let q = supabase.from('orders').select('*').order('created_at', { ascending: false });
-      if (status && status !== 'all') q = q.eq('status', status);
-      return q;
-    })(),
-    supabase.from('orders').select('status, product_price'),
+  const [filtered, all] = await Promise.all([
+    status && status !== 'all'
+      ? db`SELECT * FROM orders WHERE status = ${status} ORDER BY created_at DESC`
+      : db`SELECT * FROM orders ORDER BY created_at DESC`,
+    db`SELECT status, product_price FROM orders`,
   ]);
 
-  if (filteredResult.error) return NextResponse.json({ error: filteredResult.error.message }, { status: 500 });
-
-  const all = allResult.data || [];
   const stats = {
     total: all.length,
     pending: all.filter(o => o.status === 'pending').length,
@@ -36,10 +24,10 @@ export async function GET(req: NextRequest) {
     delivered: all.filter(o => o.status === 'delivered').length,
     revenue: all
       .filter(o => ['paid', 'shipped', 'delivered'].includes(o.status))
-      .reduce((sum, o) => sum + (o.product_price || 0), 0),
+      .reduce((sum, o) => sum + (Number(o.product_price) || 0), 0),
   };
 
-  return NextResponse.json({ orders: filteredResult.data, stats });
+  return NextResponse.json({ orders: filtered, stats });
 }
 
 export async function PATCH(req: NextRequest) {
@@ -47,25 +35,23 @@ export async function PATCH(req: NextRequest) {
 
   const { orderId, status, trackingId, trackingLink } = await req.json();
   if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 });
+  if (!status && !trackingId && !trackingLink) return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
 
-  const supabase = db();
-  const updates: Record<string, string> = {};
-  if (status) updates.status = status;
-  if (trackingId) updates.tracking_id = trackingId;
-  if (trackingLink) updates.tracking_link = trackingLink;
-
-  if (!Object.keys(updates).length) return NextResponse.json({ error: 'Nothing to update' }, { status: 400 });
-
-  const { error } = await supabase.from('orders').update(updates).eq('razorpay_order_id', orderId);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const db = sql();
+  await db`
+    UPDATE orders SET
+      status       = COALESCE(${status      ?? null}, status),
+      tracking_id  = COALESCE(${trackingId  ?? null}, tracking_id),
+      tracking_link= COALESCE(${trackingLink ?? null}, tracking_link)
+    WHERE razorpay_order_id = ${orderId}
+  `;
 
   if (status === 'shipped') {
-    const { data: order } = await supabase
-      .from('orders')
-      .select('buyer_email, buyer_name, product_name')
-      .eq('razorpay_order_id', orderId)
-      .single();
-
+    const rows = await db`
+      SELECT buyer_email, buyer_name, product_name
+      FROM orders WHERE razorpay_order_id = ${orderId}
+    `;
+    const order = rows[0];
     if (order) {
       const resend = new Resend(process.env.RESEND_API_KEY!);
       await resend.emails.send({

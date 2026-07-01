@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.108.0",
+    "@neondatabase/serverless": "^0.10.4",
     "cashfree-pg": "^6.0.4",
     "next": "^15.3.3",
     "razorpay": "^2.9.6",

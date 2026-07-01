@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { PRODUCTS } from '@/lib/products';
 import { createPrintroveOrder } from '@/lib/printrove';
+import { sql } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Verify payment status with Cashfree
     const apiBase = process.env.CASHFREE_ENV === 'production'
       ? 'https://api.cashfree.com/pg'
       : 'https://sandbox.cashfree.com/pg';
@@ -55,36 +54,27 @@ export async function POST(req: NextRequest) {
     }
 
     const cfOrderId: string = cfOrder.cf_order_id ?? orderId;
+    const db = sql();
 
-    // Save order to Supabase
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    const { error: dbError } = await supabase.from('orders').insert({
-      razorpay_order_id: orderId,
-      razorpay_payment_id: cfOrderId,
-      product_id: productId,
-      product_name: productName,
-      product_price: amount,
-      size: size || null,
-      buyer_name: buyerName,
-      buyer_email: buyerEmail,
-      buyer_phone: buyerPhone || null,
-      buyer_address: `${buyerAddress}, ${buyerCity}, ${buyerState} - ${buyerPincode}`,
-      status: 'paid',
-    });
-
-    if (dbError) {
-      if (dbError.code === '23505') {
+    try {
+      await db`
+        INSERT INTO orders (
+          razorpay_order_id, razorpay_payment_id, product_id, product_name,
+          product_price, size, buyer_name, buyer_email, buyer_phone, buyer_address, status
+        ) VALUES (
+          ${orderId}, ${cfOrderId}, ${productId}, ${productName},
+          ${amount}, ${size || null}, ${buyerName}, ${buyerEmail},
+          ${buyerPhone || null}, ${`${buyerAddress}, ${buyerCity}, ${buyerState} - ${buyerPincode}`}, 'paid'
+        )
+      `;
+    } catch (err: any) {
+      if (err.code === '23505') {
         return NextResponse.json({ success: true, orderId });
       }
-      console.error('Supabase insert error:', dbError);
+      console.error('DB insert error:', err);
       return NextResponse.json({ error: 'Failed to save order' }, { status: 500 });
     }
 
-    // Forward to Printrove for fulfillment (fire-and-forget — failure doesn't block customer confirmation)
     const product = PRODUCTS.find(p => p.id === productId);
     if (product && size) {
       const variantId = product.printroveVariantIds[size];
@@ -117,7 +107,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Send confirmation email
     const resend = new Resend(process.env.RESEND_API_KEY!);
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
