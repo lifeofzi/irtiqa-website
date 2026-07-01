@@ -87,12 +87,22 @@ export default function MerchSection() {
   const [error, setError] = useState('');
   const [orderSuccess, setOrderSuccess] = useState<OrderSuccess | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [outOfStock, setOutOfStock] = useState<Record<string, boolean>>({});
 
   // Sync state when browser back/forward changes ?p=
   useEffect(() => {
     const p = searchParams.get('p');
     setDetailProduct(PRODUCTS.find(prod => prod.id === p) ?? null);
   }, [searchParams]);
+
+  // Fetch live stock whenever a product detail opens
+  useEffect(() => {
+    if (!detailProduct) { setOutOfStock({}); return; }
+    fetch(`/api/stock?productId=${detailProduct.id}`)
+      .then(r => r.json())
+      .then(d => setOutOfStock(d.outOfStock ?? {}))
+      .catch(() => {});
+  }, [detailProduct]);
 
   // Handle post-Cashfree-redirect verification
   useEffect(() => {
@@ -351,8 +361,10 @@ export default function MerchSection() {
                   {detailProduct.sizes.map((s) => (
                     <button
                       key={s}
-                      className={`merch-size-btn${pickedSize === s ? ' active' : ''}`}
-                      onClick={() => setPickedSize(s)}
+                      className={`merch-size-btn${pickedSize === s ? ' active' : ''}${outOfStock[s] ? ' sold-out' : ''}`}
+                      onClick={() => !outOfStock[s] && setPickedSize(s)}
+                      disabled={outOfStock[s]}
+                      title={outOfStock[s] ? 'Out of stock' : undefined}
                     >
                       {s}
                     </button>
@@ -461,7 +473,7 @@ export default function MerchSection() {
                   onChange={(e) => setForm({ ...form, size: e.target.value })}>
                   {selectedProduct.sizeChartType === 'none' && <option value="">Select model</option>}
                   {selectedProduct.sizes.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s} disabled={outOfStock[s]}>{s}{outOfStock[s] ? ' — Out of stock' : ''}</option>
                   ))}
                 </select>
               </div>
