@@ -24,7 +24,7 @@ export const PRODUCTS: Product[] = [
     price: 599,
     description: 'Limited edition oversized tee. IRTIQA printed in red on black. 100% heavy cotton. Drops below the hip — wear it loud.',
     tag: 'Apparel',
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+    sizes: ['XS', 'S', 'M', 'XL', '2XL'],
     sizeLabel: 'Size',
     images: ['/merch-tee.jpg'],
     sizeChartType: 'men',
