@@ -1,7 +1,7 @@
 const PRINTROVE_API = 'https://api.printrove.com/api/external';
 
 async function getToken(): Promise<string> {
-  const res = await fetch(`${PRINTROVE_API}/login`, {
+  const res = await fetch(`${PRINTROVE_API}/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({
@@ -9,9 +9,9 @@ async function getToken(): Promise<string> {
       password: process.env.PRINTROVE_PASSWORD!,
     }),
   });
-  if (!res.ok) throw new Error(`Printrove login failed: ${res.status}`);
+  if (!res.ok) throw new Error(`Printrove token fetch failed: ${res.status}`);
   const data = await res.json();
-  return data.token;
+  return data.access_token;
 }
 
 export interface PrintroveOrderParams {
