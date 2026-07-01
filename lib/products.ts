@@ -26,7 +26,7 @@ export const PRODUCTS: Product[] = [
     tag: 'Apparel',
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
     sizeLabel: 'Size',
-    images: ['/merch-tee.jpg'],
+    images: ['/merch-tee-3.jpg', '/merch-tee-2.jpg', '/merch-tee.jpg'],
     sizeChartType: 'men',
     printroveProductId: 857314,
     printroveVariantIds: {
