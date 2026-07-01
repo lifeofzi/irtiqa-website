@@ -1,6 +1,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--red:#c00000;--bright:#ff2222;--dim:#600000;--black:#050505;--white:#f0f0f0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{background:var(--black);color:var(--white);font-family:'Oswald',Impact,'Arial Narrow',sans-serif;overflow-x:hidden}
 
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.045) 2px,rgba(0,0,0,.045) 4px)}
@@ -178,10 +178,11 @@ footer{padding:36px 20px;text-align:center;font-size:11px;letter-spacing:.28em;c
 .top-stream-icon{display:flex;align-items:center;justify-content:center;padding:8px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
 .top-stream-icon:hover{color:var(--white)}
 @media(max-width:760px){
-  .top-tab{padding:12px 10px;font-size:9px;letter-spacing:.2em}
-  .top-stream-icons{padding:0 8px;gap:0}
-  .top-stream-icon{padding:6px}
-  .top-stream-icon svg{width:15px;height:15px}
+  .top-tabs{flex:1;overflow-x:visible}
+  .top-tab{flex:1;padding:12px 2px;font-size:8px;letter-spacing:0;justify-content:center;min-width:0}
+  .top-stream-icons{padding:0 6px;gap:0;flex-shrink:0}
+  .top-stream-icon{padding:5px}
+  .top-stream-icon svg{width:14px;height:14px}
 }
 
 /* VIDEOS SECTION */
