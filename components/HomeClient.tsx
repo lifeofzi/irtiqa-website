@@ -109,7 +109,7 @@ export default function HomeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialSection = (searchParams.get('s') as Section | null);
-  const validSections: Section[] = ['irtiqa', 'wolivo', 'videos', 'about'];
+  const validSections: Section[] = ['irtiqa', 'wolivo', 'videos', 'about', 'merch'];
   const [activeSection, setActiveSection] = useState<Section>(
     initialSection && validSections.includes(initialSection) ? initialSection : 'irtiqa'
   );
@@ -912,7 +912,7 @@ export default function HomeClient() {
 
       <nav className="top-nav" aria-label="Content sections">
         <div className="top-tabs">
-          {(['irtiqa', 'wolivo', 'videos', 'about'] as Section[]).map((s) => (
+          {(['irtiqa', 'wolivo', 'videos', 'about', 'merch'] as Section[]).map((s) => (
             <button
               key={s}
               className={`top-tab${activeSection === s ? ' active' : ''}`}

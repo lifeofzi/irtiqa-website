@@ -26,7 +26,7 @@ export const PRODUCTS: Product[] = [
     tag: 'Apparel',
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
     sizeLabel: 'Size',
-    images: [],
+    images: ['/merch-tee.jpg'],
     sizeChartType: 'men',
     printroveProductId: 857314,
     printroveVariantIds: {
@@ -84,7 +84,7 @@ export const PRODUCTS: Product[] = [
       'Samsung Galaxy S25',
     ],
     sizeLabel: 'Model',
-    images: [],
+    images: ['/merch-case.jpg'],
     sizeChartType: 'none',
     printroveProductId: 857315,
     printroveVariantIds: {
