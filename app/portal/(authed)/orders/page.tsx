@@ -28,6 +28,8 @@ interface Order {
   tracking_id: string | null;
   tracking_link: string | null;
   created_at: string;
+  printrove_status: string | null;
+  printrove_order_id: string | null;
 }
 
 const STATUS_COLORS: Record<string, React.CSSProperties> = {
@@ -281,12 +283,15 @@ export default function OrdersPage() {
                   ['Date', new Date(order.created_at).toLocaleString('en-IN')],
                   order.tracking_id ? ['Tracking ID', order.tracking_id] : null,
                   order.tracking_link ? ['Tracking Link', order.tracking_link] : null,
+                  order.printrove_status ? ['Printrove', order.printrove_status + (order.printrove_order_id ? ` · ${order.printrove_order_id}` : '')] : null,
                 ].filter((x): x is string[] => x !== null).map(([label, value]) => (
                   <div key={label}>
                     <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', marginRight: 8 }}>{label}</span>
                     {label === 'Tracking Link'
                       ? <a href={value} target="_blank" rel="noopener noreferrer" style={{ color: '#c00000', textDecoration: 'underline' }}>{value}</a>
-                      : <span>{value}</span>
+                      : label === 'Printrove'
+                        ? <span style={{ color: value.startsWith('submitted') ? '#00aa44' : value.startsWith('failed') ? '#c00000' : 'rgba(255,255,255,0.4)' }}>{value}</span>
+                        : <span>{value}</span>
                     }
                   </div>
                 ))}

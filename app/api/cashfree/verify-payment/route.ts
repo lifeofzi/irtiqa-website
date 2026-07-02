@@ -75,11 +75,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to save order' }, { status: 500 });
     }
 
+    // Ensure printrove columns exist (idempotent)
+    await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS printrove_status TEXT`.catch(() => {});
+    await db`ALTER TABLE orders ADD COLUMN IF NOT EXISTS printrove_order_id TEXT`.catch(() => {});
+
     const product = PRODUCTS.find(p => p.id === productId);
     if (product && size) {
       const variantId = product.printroveVariantIds[size];
       if (variantId) {
-        createPrintroveOrder({
+        const result = await createPrintroveOrder({
           referenceNumber: orderId,
           retailPrice: amount,
           customer: {
@@ -93,17 +97,17 @@ export async function POST(req: NextRequest) {
           },
           printroveProductId: product.printroveProductId,
           variantId,
-        }).then(result => {
-          if (!result.success) {
-            console.error(`Printrove order failed for ${orderId}:`, result.error);
-          } else {
-            console.log(`Printrove order created for ${orderId}: #${result.printroveOrderId}`);
-          }
-        }).catch(err => {
-          console.error(`Printrove order error for ${orderId}:`, err);
         });
+
+        await db`
+          UPDATE orders SET
+            printrove_status = ${result.success ? 'submitted' : 'failed'},
+            printrove_order_id = ${result.printroveOrderId ? String(result.printroveOrderId) : result.error ?? null}
+          WHERE razorpay_order_id = ${orderId}
+        `.catch(err => console.error('Failed to update printrove_status:', err));
       } else {
         console.error(`No Printrove variant found for product=${productId} size=${size}`);
+        await db`UPDATE orders SET printrove_status = 'no_variant' WHERE razorpay_order_id = ${orderId}`.catch(() => {});
       }
     }
 

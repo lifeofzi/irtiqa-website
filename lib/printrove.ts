@@ -57,6 +57,7 @@ export async function createPrintroveOrder(
         city: params.customer.city,
         country: 'India',
       },
+      cod: 0,
       order_products: [
         {
           product_id: params.printroveProductId,
