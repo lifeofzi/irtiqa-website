@@ -9,8 +9,12 @@ async function getToken(): Promise<string> {
       password: process.env.PRINTROVE_PASSWORD!,
     }),
   });
-  if (!res.ok) throw new Error(`Printrove token fetch failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Printrove auth failed (${res.status}): ${body}`);
+  }
   const data = await res.json();
+  if (!data.access_token) throw new Error(`Printrove auth: no access_token in response — ${JSON.stringify(data)}`);
   return data.access_token;
 }
 
@@ -33,8 +37,35 @@ export interface PrintroveOrderParams {
 export async function createPrintroveOrder(
   params: PrintroveOrderParams
 ): Promise<{ success: boolean; printroveOrderId?: number; error?: string }> {
+  const tag = `[Printrove] ref=${params.referenceNumber} product=${params.printroveProductId} variant=${params.variantId}`;
+  console.log(`${tag} — attempting order creation`);
+
   try {
     const token = await getToken();
+    console.log(`${tag} — auth OK`);
+
+    const payload = {
+      reference_number: params.referenceNumber,
+      retail_price: params.retailPrice,
+      customer: {
+        name: params.customer.name,
+        email: params.customer.email,
+        number: params.customer.phone,
+        address1: params.customer.address1,
+        pincode: parseInt(params.customer.pincode, 10),
+        state: params.customer.state,
+        city: params.customer.city,
+        country: 'India',
+      },
+      order_products: [
+        {
+          product_id: params.printroveProductId,
+          variant_id: params.variantId,
+          quantity: 1,
+          is_plain: false,
+        },
+      ],
+    };
 
     const res = await fetch(`${PRINTROVE_API}/orders`, {
       method: 'POST',
@@ -43,37 +74,23 @@ export async function createPrintroveOrder(
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({
-        reference_number: params.referenceNumber,
-        retail_price: params.retailPrice,
-        customer: {
-          name: params.customer.name,
-          email: params.customer.email,
-          number: params.customer.phone,
-          address1: params.customer.address1,
-          pincode: parseInt(params.customer.pincode, 10),
-          state: params.customer.state,
-          city: params.customer.city,
-          country: 'India',
-        },
-        order_products: [
-          {
-            product_id: params.printroveProductId,
-            variant_id: params.variantId,
-            quantity: 1,
-            is_plain: false,
-          },
-        ],
-      }),
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
+
     if (!res.ok) {
       const msg = data.message || data.error || 'Printrove order creation failed';
+      console.error(`${tag} — FAILED (${res.status}): ${msg}`, JSON.stringify(data));
       return { success: false, error: msg };
     }
-    return { success: true, printroveOrderId: data.id ?? data.order_id };
+
+    const printroveOrderId = data.id ?? data.order_id;
+    console.log(`${tag} — SUCCESS printroveOrderId=${printroveOrderId}`);
+    return { success: true, printroveOrderId };
   } catch (err) {
-    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    console.error(`${tag} — EXCEPTION: ${msg}`);
+    return { success: false, error: msg };
   }
 }
