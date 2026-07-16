@@ -4,23 +4,32 @@ import './globals.css';
 export const metadata: Metadata = {
   metadataBase: new URL('https://alisaffudin.com'),
   title: {
-    default: 'Ali Saffudin — Kashmiri Singer-Songwriter | Irtiqa',
+    default: 'Ali Saffudin — Kashmiri Singer-Songwriter | Azadi Records',
     template: '%s | Ali Saffudin',
   },
-  description: 'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir — blending Alternative Rock and Blues with Kashmiri Sufi poetry. Stream Irtiqa and Wolivo on Spotify, Apple Music, and YouTube.',
+  description: 'Ali Saffudin is a Kashmiri singer-songwriter from Srinagar on Azadi Records — blending Alternative Rock and Blues with Kashmiri Sufi poetry. Stream IRTIQA EP and Wolivo on Spotify, Apple Music, and YouTube.',
+  keywords: ['Ali Saffudin', 'Kashmiri singer', 'Kashmiri singer-songwriter', 'Azadi Records', 'Kashmiri music', 'kashmiri sufi music', 'alternative rock Kashmir', 'IRTIQA', 'Wolivo'],
+  alternates: {
+    canonical: 'https://alisaffudin.com',
+    languages: {
+      'en-IN': 'https://alisaffudin.com',
+      'en-PK': 'https://alisaffudin.com',
+      'en': 'https://alisaffudin.com',
+    },
+  },
   openGraph: {
     type: 'profile',
-    locale: 'en_US',
+    locale: 'en_IN',
     url: 'https://alisaffudin.com',
     siteName: 'Ali Saffudin',
-    title: 'Ali Saffudin — Kashmiri Singer-Songwriter',
-    description: 'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir — blending Alternative Rock and Blues with Kashmiri Sufi poetry.',
+    title: 'Ali Saffudin — Kashmiri Singer-Songwriter | Azadi Records',
+    description: 'Ali Saffudin is a Kashmiri singer-songwriter from Srinagar on Azadi Records — blending Alternative Rock and Blues with Kashmiri Sufi poetry.',
     images: [{ url: '/cover.jpg', width: 1200, height: 1200, alt: 'IRTIQA — Ali Saffudin' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ali Saffudin — Kashmiri Singer-Songwriter',
-    description: 'Ali Saffudin is a singer-songwriter from Srinagar, Kashmir — blending Alternative Rock and Blues with Kashmiri Sufi poetry.',
+    title: 'Ali Saffudin — Kashmiri Singer-Songwriter | Azadi Records',
+    description: 'Ali Saffudin is a Kashmiri singer-songwriter from Srinagar on Azadi Records — blending Alternative Rock and Blues with Kashmiri Sufi poetry.',
     images: ['/cover.jpg'],
   },
 };
@@ -42,10 +51,12 @@ const jsonLd = [
     name: 'Ali Saffudin',
     url: 'https://alisaffudin.com',
     image: 'https://alisaffudin.com/ali.jpg',
-    description: 'Singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir. Blends Alternative Rock and Blues with Kashmiri Sufi poetry.',
-    genre: ['Alternative Rock', 'Blues', 'Kashmiri Folk', 'Sufi'],
+    description: 'Kashmiri singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir. Signed to Azadi Records. Blends Alternative Rock and Blues with Kashmiri Sufi poetry.',
+    genre: ['Alternative Rock', 'Blues', 'Kashmiri Folk', 'Sufi', 'Indie Rock'],
     birthPlace: { '@type': 'Place', name: 'Srinagar, Kashmir, India' },
-    recordLabel: { '@type': 'Organization', name: 'Azadi Records' },
+    nationality: { '@type': 'Country', name: 'India' },
+    knowsAbout: ['Kashmiri folk music', 'Sufi poetry', 'Alternative Rock', 'Kashmiri language', 'music production'],
+    recordLabel: { '@type': 'Organization', name: 'Azadi Records', url: 'https://www.azadirecords.com' },
     sameAs: [
       'https://open.spotify.com/artist/0J3PUchbuLhyRD6RxFQrrE',
       'https://music.apple.com/us/artist/ali-saffudin/1456350962',
@@ -64,7 +75,7 @@ const jsonLd = [
     '@type': 'MusicAlbum',
     '@id': 'https://alisaffudin.com/#album-irtiqa',
     name: 'IRTIQA',
-    url: 'https://alisaffudin.com/?s=irtiqa',
+    url: 'https://alisaffudin.com/',
     numTracks: 4,
     datePublished: '2026',
     image: 'https://alisaffudin.com/cover.jpg',
@@ -111,11 +122,65 @@ const jsonLd = [
       { '@type': 'MusicRecording', name: 'Walo Ha', position: 10, inAlbum: { '@id': 'https://alisaffudin.com/#album-wolivo' }, url: 'https://www.youtube.com/watch?v=G2AyGm053V8' },
     ],
   },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Who is Ali Saffudin?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin is a Kashmiri singer-songwriter from Hassanabad, Downtown Srinagar, Kashmir. He is signed to Azadi Records and creates Alternative Rock and Blues music blended with Kashmiri Sufi poetry, singing in Kashmiri and Urdu.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What genre does Ali Saffudin make?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin makes Alternative Rock and Blues music rooted in Kashmiri folk and Sufi poetry traditions. His sound draws from punk, grunge, heavy metal, and folk, sung primarily in the Kashmiri language.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What label is Ali Saffudin signed to?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin is signed to Azadi Records, an independent music label based in South Asia known for platforming boundary-pushing artists.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What albums has Ali Saffudin released?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin has released two records: Wolivo (2022), a 10-track debut album on Azadi Records, and IRTIQA (2026), a 4-track EP. Both are available on Spotify, Apple Music, and YouTube.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Why does Ali Saffudin sing in Kashmiri?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin has described singing in Kashmiri as a political act — a way of preserving the language and culture of Kashmir. As The Guardian noted: "To sing in Kashmiri is political." He draws on the classical Kashmiri folk tradition, reworking ballads by 16th-century poetess Habba Khatoon alongside original compositions.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Where can I stream Ali Saffudin\'s music?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Ali Saffudin\'s music is available on Spotify (https://open.spotify.com/artist/0J3PUchbuLhyRD6RxFQrrE), Apple Music (https://music.apple.com/us/artist/ali-saffudin/1456350962), and YouTube (https://www.youtube.com/channel/UC9ezXxVBdZH7uFwE1Ua57rA).',
+        },
+      },
+    ],
+  },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

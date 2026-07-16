@@ -3,11 +3,19 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Press — Ali Saffudin | Kashmiri Singer-Songwriter',
-  description: 'Press coverage of Ali Saffudin — featured in The Guardian, Outlook India, Scroll.in, Wild City, Brooklyn Raga Massive, and more.',
-  alternates: { canonical: 'https://alisaffudin.com/press' },
+  description: 'Press coverage of Kashmiri singer-songwriter Ali Saffudin (Azadi Records) — featured in The Guardian, Outlook India, Scroll.in, Wild City, and more.',
+  alternates: {
+    canonical: 'https://alisaffudin.com/press',
+    languages: {
+      'en-IN': 'https://alisaffudin.com/press',
+      'en-PK': 'https://alisaffudin.com/press',
+      'en': 'https://alisaffudin.com/press',
+    },
+  },
   openGraph: {
-    title: 'Press — Ali Saffudin',
-    description: 'Press coverage of Ali Saffudin — featured in The Guardian, Outlook India, Scroll.in, Wild City, Brooklyn Raga Massive, and more.',
+    type: 'website',
+    title: 'Press — Ali Saffudin | Kashmiri Singer-Songwriter',
+    description: 'Press coverage of Kashmiri singer-songwriter Ali Saffudin (Azadi Records) — featured in The Guardian, Outlook India, Scroll.in, Wild City, and more.',
     url: 'https://alisaffudin.com/press',
     images: [{ url: '/ali.jpg' }],
   },
@@ -18,36 +26,43 @@ const PRESS = [
     publication: 'The Guardian',
     year: '2022',
     title: '"To sing in Kashmiri is political" — Ali Saffudin, the singer-songwriter who smuggled his album to the world',
+    url: 'https://www.theguardian.com/music/2022/aug/19/to-sing-in-kashmiri-is-political-ali-saffudin-the-singer-songwriter-who-smuggled-his-album-to-the-world',
   },
   {
     publication: 'Outlook India',
     year: '2022',
     title: 'Meet Ali Saffudin: Singer of New Kashmiri Music',
+    url: 'https://www.outlookindia.com',
   },
   {
     publication: 'Scroll.in',
     year: '2022',
     title: 'This young Kashmiri musician flew down to Delhi for a day — just to buy medicines for his granny',
+    url: 'https://scroll.in',
   },
   {
     publication: 'Platform Magazine',
     year: '2022',
     title: 'Ali Saffudin — Debut Album Wolivo',
+    url: 'https://www.platformmagazine.in',
   },
   {
     publication: 'Sunday Guardian Live',
     year: '2022',
     title: "This solo-frontman is Valley's own Rock and Blues prodigy",
+    url: 'https://www.sundayguardianlive.com',
   },
   {
     publication: 'Wild City',
     year: '',
     title: 'Ali Saffudin — Artist Profile',
+    url: 'https://www.wildcity.in',
   },
   {
     publication: 'Brooklyn Raga Massive',
     year: '',
     title: 'Ali Saffudin — Artist Profile',
+    url: 'https://www.brooklynragamassive.com',
   },
 ];
 
@@ -71,7 +86,10 @@ export default function PressPage() {
                 <span className="press-publication">{item.publication}</span>
                 {item.year && <span className="press-year">{item.year}</span>}
               </div>
-              <p className="press-item-title">{item.title}</p>
+              {item.url
+                ? <a href={item.url} target="_blank" rel="noopener noreferrer" className="press-item-title" style={{ textDecoration: 'none', color: 'inherit' }}>{item.title}</a>
+                : <p className="press-item-title">{item.title}</p>
+              }
             </article>
           ))}
         </div>
