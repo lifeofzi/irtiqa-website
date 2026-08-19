@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       order_currency: 'INR',
       customer_details: {
         customer_id: buyerEmail.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 50),
-        customer_phone: buyerPhone || '9999999999',
+        customer_phone: (buyerPhone || '9999999999').replace(/\s+/g, ''),
         customer_name: buyerName,
         customer_email: buyerEmail,
       },
