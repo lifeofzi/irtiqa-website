@@ -153,7 +153,7 @@ export default function HomeClient() {
     const cv = pausedCassetteRef.current;
     if (!cv) return;
     const img = new Image();
-    img.src = '/cassette.gif';
+    img.src = '/cassette-frame.jpg';
     img.onload = () => {
       cv.width = img.naturalWidth;
       cv.height = img.naturalHeight;
