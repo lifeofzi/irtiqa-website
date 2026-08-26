@@ -1201,7 +1201,9 @@ export default function HomeClient() {
         <span className="footer-sep">&nbsp;·&nbsp;</span>
         <span>2026</span>
         <span className="footer-sep">&nbsp;·&nbsp;</span>
-        <a href="https://zamanishtiyaq.work/" target="_blank" rel="noopener noreferrer" className="footer-link" style={{opacity: 0.5}}>Site by Zaman</a>
+        <a href="https://www.anarchylabs.in/" target="_blank" rel="noopener noreferrer" className="footer-link" style={{opacity: 0.5}}>Site by Anarchy Labs</a>
+        <span className="footer-sep">&nbsp;/&nbsp;</span>
+        <a href="https://zamanishtiyaq.work/" target="_blank" rel="noopener noreferrer" className="footer-link" style={{opacity: 0.5}}>Zaman</a>
       </footer>
     </>
   );
