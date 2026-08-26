@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/:path*',
-        has: [{ type: 'host', value: 'www.alisaffudin.com' }],
-        destination: 'https://alisaffudin.com/:path*',
+        has: [{ type: 'host', value: 'alisaffudin.com' }],
+        destination: 'https://www.alisaffudin.com/:path*',
         permanent: true,
       },
     ];

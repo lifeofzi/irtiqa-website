@@ -5,18 +5,18 @@ export const metadata: Metadata = {
   title: 'Press — Ali Saffudin | Kashmiri Singer-Songwriter',
   description: 'Press coverage of Kashmiri singer-songwriter Ali Saffudin (Azadi Records) — featured in The Guardian, Outlook India, Scroll.in, Wild City, and more.',
   alternates: {
-    canonical: 'https://alisaffudin.com/press',
+    canonical: 'https://www.alisaffudin.com/press',
     languages: {
-      'en-IN': 'https://alisaffudin.com/press',
-      'en-PK': 'https://alisaffudin.com/press',
-      'en': 'https://alisaffudin.com/press',
+      'en-IN': 'https://www.alisaffudin.com/press',
+      'en-PK': 'https://www.alisaffudin.com/press',
+      'en': 'https://www.alisaffudin.com/press',
     },
   },
   openGraph: {
     type: 'website',
     title: 'Press — Ali Saffudin | Kashmiri Singer-Songwriter',
     description: 'Press coverage of Kashmiri singer-songwriter Ali Saffudin (Azadi Records) — featured in The Guardian, Outlook India, Scroll.in, Wild City, and more.',
-    url: 'https://alisaffudin.com/press',
+    url: 'https://www.alisaffudin.com/press',
     images: [{ url: '/ali.jpg' }],
   },
 };

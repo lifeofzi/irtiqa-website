@@ -12,6 +12,6 @@ export default function robots(): MetadataRoute.Robots {
       // Block admin portal from all crawlers
       { userAgent: '*', allow: '/', disallow: ['/portal', '/api'] },
     ],
-    sitemap: 'https://alisaffudin.com/sitemap.xml',
+    sitemap: 'https://www.alisaffudin.com/sitemap.xml',
   };
 }

@@ -243,7 +243,7 @@ export default function MerchSection() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'IRTIQA Merch — Ali Saffudin',
-    url: 'https://alisaffudin.com/?s=merch',
+    url: 'https://www.alisaffudin.com/?s=merch',
     itemListElement: PRODUCTS.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -257,7 +257,7 @@ export default function MerchSection() {
           priceCurrency: 'INR',
           price: p.price,
           availability: 'https://schema.org/InStock',
-          url: `https://alisaffudin.com/?s=merch&p=${p.id}`,
+          url: `https://www.alisaffudin.com/?s=merch&p=${p.id}`,
         },
       },
     })),

@@ -36,7 +36,7 @@ export async function generateMetadata(
   const { s } = await searchParams;
   const key = s && SECTION_META[s] ? s : 'irtiqa';
   const meta = SECTION_META[key];
-  const canonical = key === 'irtiqa' ? 'https://alisaffudin.com/' : `https://alisaffudin.com/?s=${key}`;
+  const canonical = key === 'irtiqa' ? 'https://www.alisaffudin.com/' : `https://www.alisaffudin.com/?s=${key}`;
 
   return {
     title: meta.title,
